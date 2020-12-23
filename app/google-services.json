@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "325418064596",
+    "firebase_url": "https://aidatalab-a7127.firebaseio.com",
+    "project_id": "aidatalab-a7127",
+    "storage_bucket": "aidatalab-a7127.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325418064596:android:a057b9882dbc4dd662f941",
+        "android_client_info": {
+          "package_name": "in.ganeshhulyal.aidatalab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "325418064596-06bc10vuut0ul743rqm3bgsl2fmfsfq8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.ganeshhulyal.aidatalab",
+            "certificate_hash": "275775c6122314ef157daa75f8bde7f59c19faae"
+          }
+        },
+        {
+          "client_id": "325418064596-i0sa0qn2b31u02c16j3hhpne2igf3nu7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6mMl0qAJ-IX8MmhAxlRJAumf3ENJQUVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "325418064596-i0sa0qn2b31u02c16j3hhpne2igf3nu7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

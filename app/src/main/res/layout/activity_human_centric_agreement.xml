@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    android:orientation="vertical"
+    android:weightSum="100"
+    tools:context=".activities.AgreementActivity">
+
+    <include
+        android:id="@+id/toolbar_agreement"
+        layout="@layout/toolbar_item" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:fontFamily="@font/poppins_semibold"
+        android:padding="@dimen/padding_14dp"
+        android:text="Human Centric Consent"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/heading_size" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/margin"
+        android:layout_weight="90"
+        android:padding="@dimen/padding"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="@dimen/corner_radius_large">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp" />
+
+                <LinearLayout
+                    android:id="@+id/agreement_layout_one"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margintop"
+                    android:orientation="horizontal"
+                    android:visibility="visible"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="100"
+                        android:fontFamily="sans-serif-condensed-light"
+                        android:padding="@dimen/padding_14dp"
+                        android:text="@string/humanConsent"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/normal_font_size" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/agreement_layout_three"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <CheckBox
+                        android:id="@+id/agreement_one"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:backgroundTint="@color/white"
+                        android:buttonTint="@color/white"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:padding="@dimen/padding_14dp"
+                        android:text="Accept all user agreement"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
+
+                <Button
+                    android:id="@+id/accept_agreement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/margintop"
+                    android:backgroundTint="@color/white"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Accept and Proceed"
+                    android:textColor="@color/colorPrimary"
+                    android:visibility="gone" />
+
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

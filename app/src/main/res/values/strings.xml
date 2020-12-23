@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">AI Data Lab</string>
+    <string name="toolbar">Toolbar</string>
+    <string name="reg_heding">Enter Your Details</string>
+    <string name="option_1">People</string>
+    <string name="option_2">Text</string>
+    <string name="option_3">Natural</string>
+    <string name="btnTakePicture">Capture Image</string>
+    <string name="btnRecordVideo">Record Video</string>
+    <string name="or">(or)</string>
+    <string name="btnUploadToServer">Upload to Server</string>
+    <string name="humanConsent">I understand that SRI-B is building a database of images (separate set of images consist of full human body and face) and videos (capturing human body while being engaged in sports and activities) (“Personal Data”) and has engaged the services of Agent for the same.\nSRI-B and its Affiliates, intends to use the said images and videos for commercial, research and development purposes (“Purpose/ Program”) of new features related to mobile devices.
+    I understand that Agent is the authorized partner of SRI-B to collect my Personal Data on behalf of SRI-B. I also understand that participation in the Purpose/ Program is purely voluntary.\nI hereby declare that:
+\ni)   II have understood the Purpose/Program.  \nii)   I have voluntarily agreed to participate in the Purpose/ Program and I am voluntarily providing/allowing Agent to collect, and share my Personal Data. \niii)    The Personal Information provided by me may be archived and used for future commercial, research and development purposes by SRI – B and its Affiliates.\nI understand that:\ni)   SRI-B or its Affiliates may share my Personal Data with their business partners/service providers for the Purpose.
+\nii)  SRI-B and its Affiliates will be using the Personal data commercially and the said data will be deployed in Samsung products, but without disclosing the identity through the personal data collected. \niii)    Personal Data provided by me will be protected as per Samsung Global Privacy Policy.\nI hereby agree to keep my participation in the Program strictly confidential and shall not disclose the details of the Purpose/ Program to any third party.\nI hereby acknowledge that I have knowingly and voluntarily, without duress or reservation of any kind, signed this consent form.
+</string>
+    <string name="txtCredits"><a href="https://www.samsung.com/us/account/privacy-policy/">Samsung Privacy Policy</a></string>
+</resources>
