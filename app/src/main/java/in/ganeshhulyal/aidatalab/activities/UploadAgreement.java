@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 
 import org.apache.http.HttpEntity;
@@ -50,21 +51,23 @@ public class UploadAgreement extends AppCompatActivity {
     private TextView txtPercentage;
     private ImageView imgPreview;
     private VideoView vidPreview;
-    private Button btnUpload;
+    private MaterialCardView btnUpload;
     SharedPrefsManager sharedPrefsManager;
     long totalSize = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload_agreement);
+        setContentView(R.layout.activity_upload_agreement);;
         sharedPrefsManager = new SharedPrefsManager(this);
+        initToolbar();
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+        backButton();
         txtPercentage = (TextView) findViewById(R.id.txtPercentage);
-        btnUpload = (Button) findViewById(R.id.btnUpload);
+        btnUpload = findViewById(R.id.btnUpload);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         vidPreview = (VideoView) findViewById(R.id.videoPreview);
@@ -98,6 +101,13 @@ public class UploadAgreement extends AppCompatActivity {
         });
 
     }
+
+    private void initToolbar() {
+        TextView toolbarName;
+        toolbarName = findViewById(R.id.toolbar_name);
+        toolbarName.setText("Agreement");
+    }
+
 
     public void dialogue() {
 
@@ -275,6 +285,16 @@ public class UploadAgreement extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void backButton() {
+        ImageView backButton = findViewById(R.id.toolbar_image);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
 }

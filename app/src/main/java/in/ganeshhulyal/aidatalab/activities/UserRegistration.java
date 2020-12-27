@@ -83,19 +83,27 @@ public class UserRegistration extends AppCompatActivity {
     }
 
     private void sendOTP() {
-        sendOTP.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                number = userMobileNumber.getText().toString();
-                if (number.length() < 10 || number.length() > 10) {
-                    Toast.makeText(UserRegistration.this, "Invalid Number!", Toast.LENGTH_SHORT).show();
-                    userMobileNumberLauout.setError("Invalid Mobile Number");
-                } else {
-                    phoneAuth(number);
+        try {
+            sendOTP.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        number = userMobileNumber.getText().toString();
+                    } catch (Exception e) {
+                        Toast.makeText(UserRegistration.this, "Enter MobileNumber First!", Toast.LENGTH_SHORT).show();
+                    }
+                    if (number.length() < 10 || number.length() > 10) {
+                        Toast.makeText(UserRegistration.this, "Invalid Number!", Toast.LENGTH_SHORT).show();
+                        userMobileNumberLauout.setError("Invalid Mobile Number");
+                    } else {
+                        progressBar.setVisibility(View.VISIBLE);
+                        phoneAuth(number);
+                    }
                 }
-            }
-        });
+            });
+        } catch (Exception e){
+            Toast.makeText(this, "OTP Already Sent!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void phoneAuth(String number) {
@@ -245,6 +253,7 @@ public class UserRegistration extends AppCompatActivity {
         userConfirmPassword = findViewById(R.id.userConfirmPassword);
         userNameLayout = findViewById(R.id.fullNameLayout);
         userEmailLayout = findViewById(R.id.userEmailLayout);
+        userMobileNumberLauout=findViewById(R.id.userMobileNumberLayout);
         userUSNLayout = findViewById(R.id.userUSNLayout);
         userPasswordLayout = findViewById(R.id.userPasswordLayout);
         userConfirmationLayout = findViewById(R.id.userConfirmPasswordLayout);

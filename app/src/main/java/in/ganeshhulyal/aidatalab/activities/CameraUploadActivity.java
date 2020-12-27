@@ -24,10 +24,13 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.card.MaterialCardView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -54,7 +57,7 @@ public class CameraUploadActivity extends AppCompatActivity {
 
     private Uri fileUri; // file url to store image/video
 
-    private Button btnCapturePicture, btnRecordVideo, btnUploadImage, btnUploadVideo;
+    private MaterialCardView btnCapturePicture, btnRecordVideo, btnUploadImage, btnUploadVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +67,12 @@ public class CameraUploadActivity extends AppCompatActivity {
         StrictMode.setVmPolicy(builder.build());
         // Changing action bar background color
         // These two lines are not needed
+        backButton();
         sharedPrefsManager=new SharedPrefsManager(this);
         categoryName=sharedPrefsManager.getStringValue("categoryString","Null");
         //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(getResources().getString(R.color.action_bar))));
-        btnCapturePicture = (Button) findViewById(R.id.btnCapturePicture);
-        btnRecordVideo = (Button) findViewById(R.id.btnRecordVideo);
+        btnCapturePicture = findViewById(R.id.btnCapturePicture);
+        btnRecordVideo = findViewById(R.id.btnRecordVideo);
         btnUploadImage=findViewById(R.id.btnUploadImage);
         btnUploadVideo=findViewById(R.id.btnUploadVideo);
 
@@ -293,5 +297,17 @@ public class CameraUploadActivity extends AppCompatActivity {
         }
 
         return mediaFile;
+    }
+
+    private void backButton() {
+        ImageView backButton = findViewById(R.id.toolbar_image);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
     }
 }

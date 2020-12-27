@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
+
 import java.text.BreakIterator;
 
 import in.ganeshhulyal.aidatalab.R;
@@ -17,7 +19,7 @@ import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
 public class UserMenu extends AppCompatActivity {
 
 
-    Button nonHumanCentric, humanCentric;
+    MaterialCardView nonHumanCentric, humanCentric;
     SharedPrefsManager sharedPrefsManager;
 
     @Override
@@ -38,14 +40,13 @@ public class UserMenu extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(UserMenu.this, MetaDataNonHumanCentric.class));
                 sharedPrefsManager.saveStringValue("imageType", "Non Human Centric");
-                finish();
             }
         });
 
         humanCentric.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(UserMenu.this, MetaDataHumanCentric.class));
+                startActivity(new Intent(UserMenu.this, HumanCentricAgreement.class));
                 sharedPrefsManager.saveStringValue("imageType", "Human Centric");
                 finish();
             }
@@ -63,7 +64,6 @@ public class UserMenu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(UserMenu.this,ClassName.class));
-                finish();
             }
         });
     }

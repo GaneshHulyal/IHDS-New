@@ -108,10 +108,8 @@ public class MultipleImageUpload extends AppCompatActivity {
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
                         if (sharedPrefsManager.getStringValue("imageType", "Human Centric").equals("Human Centric")) {
                             startActivity(new Intent(MultipleImageUpload.this, MetaDataHumanCentric.class));
-                            finish();
                         } else {
                             startActivity(new Intent(MultipleImageUpload.this, MetaDataNonHumanCentric.class));
-                            finish();
                         }
                     }
                 })
@@ -119,7 +117,6 @@ public class MultipleImageUpload extends AppCompatActivity {
                     @Override
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
                         startActivity(new Intent(MultipleImageUpload.this, ClassName.class));
-                        finish();
                     }
                 })
                 .build();
@@ -134,6 +131,7 @@ public class MultipleImageUpload extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(intent, REQUEST_CODE_READ_STORAGE);
+        btnUpload.setVisibility(View.VISIBLE);
     }
 
     @Override

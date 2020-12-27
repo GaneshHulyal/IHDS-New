@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,8 +60,16 @@ public class MetaDataNonHumanCentric extends AppCompatActivity {
         setContentView(R.layout.activity_meta_data_non_human_centric);
         context = this;
         backButton();
+        initToolbar();
         init();
     }
+
+    private void initToolbar() {
+        TextView toolbarName;
+        toolbarName = findViewById(R.id.toolbar_name);
+        toolbarName.setText("Non Human Centric");
+    }
+
 
     public String getScreenSize() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -216,7 +225,6 @@ public class MetaDataNonHumanCentric extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MetaDataNonHumanCentric.this, UserMenu.class));
-                finish();
             }
         });
     }

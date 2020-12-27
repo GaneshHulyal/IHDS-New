@@ -2,14 +2,19 @@ package in.ganeshhulyal.aidatalab.activities;
 
 import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,7 +24,10 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.text.Layout;
+import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,11 +40,13 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +67,8 @@ public class AgreementActivity extends AppCompatActivity {
     // Camera activity request codes
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
+    private static final int PERMISSION_REQUEST_CODE = 1 ;
+    private static final int REQUEST_CODE = 1;
     public SharedPrefsManager sharedPrefsManager;
     public String categoryName;
     public static final int MEDIA_TYPE_IMAGE = 1;
@@ -64,8 +76,9 @@ public class AgreementActivity extends AppCompatActivity {
 
     private Uri fileUri; // file url to store image/video
 
+    TextView agreement;
     private Button btnRecordVideo, btnUploadImage, btnUploadVideo;
-    private MaterialButton btnCapturePicture,btnNext;
+    private MaterialCardView btnCapturePicture,btnNext;
     private CheckBox agreementCheckbox;
     private Context context;
 
@@ -73,9 +86,17 @@ public class AgreementActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agreement);
-        ((TextView) findViewById(R.id.infoTxtCredits)).setMovementMethod(LinkMovementMethod.getInstance());
+        if (ContextCompat.checkSelfPermission(AgreementActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(AgreementActivity.this, Manifest.permission_group.MICROPHONE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 100);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission_group.MICROPHONE}, 100);
+
+        }
+        agreement=findViewById(R.id.agreement);
+        customTextView(agreement);
+        //((TextView) findViewById(R.id.infoTxtCredits)).setMovementMethod(LinkMovementMethod.getInstance());
         btnNext=findViewById(R.id.btnAgreementNext);
         agreementCheckbox=findViewById(R.id.agreementCheckBox);
+        backButton();
         context=this;
         agreementCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -87,7 +108,7 @@ public class AgreementActivity extends AppCompatActivity {
         });
 
         if(new SharedPrefsManager(this).getBoolValue("isAllAgreementUploaded",false)){
-            startActivity(new Intent(AgreementActivity.this,UserMenu.class));
+            startActivity(new Intent(AgreementActivity.this,ClassName.class));
             finish();
         }
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -100,6 +121,7 @@ public class AgreementActivity extends AppCompatActivity {
                 if(new SharedPrefsManager(context).getBoolValue("isAgreementUploaded",false)) {
                     startActivity(new Intent(AgreementActivity.this, ClassName.class));
                     new SharedPrefsManager(context).saveBoolValue("isAllAgreementUploaded",true);
+                    finish();
                 }
                 else{
                     Toast.makeText(context, "Please upload agreement first!", Toast.LENGTH_SHORT).show();
@@ -109,7 +131,7 @@ public class AgreementActivity extends AppCompatActivity {
         sharedPrefsManager = new SharedPrefsManager(this);
         categoryName = sharedPrefsManager.getStringValue("categoryString", "Null");
         //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(getResources().getString(R.color.action_bar))));
-        btnCapturePicture = (MaterialButton) findViewById(R.id.btnCapturePicture);
+        btnCapturePicture = findViewById(R.id.btnCapturePicture);
         btnRecordVideo = (Button) findViewById(R.id.btnRecordVideo);
         btnUploadImage = findViewById(R.id.btnUploadImage);
         btnUploadVideo = findViewById(R.id.btnUploadVideo);
@@ -152,15 +174,18 @@ public class AgreementActivity extends AppCompatActivity {
         initToolbar();
     }
 
+
+
     private void initToolbar() {
         TextView toolbarName;
         toolbarName = findViewById(R.id.toolbar_name);
-        toolbarName.setText("Upload");
+        toolbarName.setText("Agreement");
     }
 
     /**
      * Checking device has camera hardware or not
      */
+
     private boolean isDeviceSupportCamera() {
         if (getApplicationContext().getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_CAMERA)) {
@@ -204,6 +229,8 @@ public class AgreementActivity extends AppCompatActivity {
         startActivityForResult(intent, CAMERA_CAPTURE_VIDEO_REQUEST_CODE);
     }
 
+
+
     /**
      * Here we store the file url as it will be null after returning from camera
      * app
@@ -223,6 +250,31 @@ public class AgreementActivity extends AppCompatActivity {
 
         // get the file url
         fileUri = savedInstanceState.getParcelable("file_uri");
+    }
+
+    private void customTextView(TextView view) {
+        SpannableStringBuilder spanTxt = new SpannableStringBuilder(
+                "I agree to the ");
+        spanTxt.append("Term of services");
+        spanTxt.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Toast.makeText(getApplicationContext(), "Terms of services Clicked",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }, spanTxt.length() - "Term of services".length(), spanTxt.length(), 0);
+        spanTxt.append(" and");
+        spanTxt.setSpan(new ForegroundColorSpan(Color.BLACK), 32, spanTxt.length(), 0);
+        spanTxt.append(" Privacy Policy");
+        spanTxt.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                Toast.makeText(getApplicationContext(), "Privacy Policy Clicked",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }, spanTxt.length() - " Privacy Policy".length(), spanTxt.length(), 0);
+        view.setMovementMethod(LinkMovementMethod.getInstance());
+        view.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
 
 
@@ -331,5 +383,18 @@ public class AgreementActivity extends AppCompatActivity {
         return mediaFile;
     }
 
+    private void backButton() {
+        ImageView backButton = findViewById(R.id.toolbar_image);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent a = new Intent(Intent.ACTION_MAIN);
+                a.addCategory(Intent.CATEGORY_HOME);
+                a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(a);
+            }
+        });
 
+
+    }
 }

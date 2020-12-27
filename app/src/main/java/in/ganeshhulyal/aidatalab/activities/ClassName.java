@@ -124,7 +124,7 @@ public class ClassName extends AppCompatActivity {
     private void initToolbar() {
         TextView toolbarName;
         toolbarName = findViewById(R.id.toolbar_name);
-        toolbarName.setText("Add Class Name");
+        toolbarName.setText("Categories");
     }
 
     private void backButton() {
@@ -132,7 +132,10 @@ public class ClassName extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Intent a = new Intent(Intent.ACTION_MAIN);
+                a.addCategory(Intent.CATEGORY_HOME);
+                a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(a);
             }
         });
     }

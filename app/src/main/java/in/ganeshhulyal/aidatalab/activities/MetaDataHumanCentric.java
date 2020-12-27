@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -46,8 +47,16 @@ public class MetaDataHumanCentric extends AppCompatActivity {
         setContentView(R.layout.activity_meta_data_human_centric);
         context = this;
         backButton();
+        initToolbar();
         init();
     }
+
+    private void initToolbar() {
+        TextView toolbarName;
+        toolbarName = findViewById(R.id.toolbar_name);
+        toolbarName.setText("Human Centric");
+    }
+
 
     public String getScreenSize() {
 
@@ -270,7 +279,6 @@ public class MetaDataHumanCentric extends AppCompatActivity {
                     sharedPrefsManager.saveStringValue("props", propsString);
                     sharedPrefsManager.saveStringValue("consent", consentString);
                     startActivity(new Intent(MetaDataHumanCentric.this, CameraUploadActivity.class));
-                    finish();
                 }
             }
         });
@@ -329,8 +337,7 @@ public class MetaDataHumanCentric extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MetaDataHumanCentric.this, UserMenu.class));
-                finish();
+                startActivity(new Intent(MetaDataHumanCentric.this, HumanCentricAgreement.class));
             }
         });
     }

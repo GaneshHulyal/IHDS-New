@@ -27,66 +27,122 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/margintop"
         android:gravity="center"
         android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="@dimen/cardview_default_radius"
-        app:cardBackgroundColor="">
-        <TextView
-            android:id="@+id/infoTxtCredits"
-            android:layout_marginTop="@dimen/margintop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:fontFamily="@font/poppins_semibold"
-            android:padding="@dimen/padding_8dp"
-            android:text="@string/txtCredits"
-            android:layout_margin="@dimen/margin"
-            android:textColor="@color/colorPrimary"
-            android:textColorLink="@color/colorPrimary"
-            android:textSize="@dimen/normal_font_size"></TextView>
-    </androidx.cardview.widget.CardView>
-
-
         <!-- Capture picture button -->
 
-        <com.google.android.material.button.MaterialButton
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/btnCapturePicture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/large_padding"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0.0px"
+            android:elevation="8dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            app:cardCornerRadius="@dimen/corner_radius_medium"
+            app:cardPreventCornerOverlap="false">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageHumanCentric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_8dp"
+                    android:src="@drawable/agreement_icon" />
+
+                <TextView
+                    android:id="@+id/textHumanCentric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toRightOf="@id/imageHumanCentric"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_8dp"
+                    android:text="Capture Agreement"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/btn_bg"
-            android:padding="@dimen/padding_8dp"
-            android:layout_margin="@dimen/margin"
-            android:text="Capture Agreement"
+            android:layout_margin="@dimen/large_padding"
             android:layout_marginTop="@dimen/margintop"
-            android:textColor="@color/white"
-            app:cornerRadius="@dimen/cardview_default_radius"
-            app:icon="@drawable/ic_baseline_camera_enhance_24" />
+            android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/agreementCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="I accept all agreement"
-            android:fontFamily="@font/poppins_semibold"
-            android:textSize="@dimen/normal_font_size"
-            android:layout_margin="@dimen/margin"
-            android:textColor="@color/colorPrimary" />
+            <CheckBox
+                android:id="@+id/agreementCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/marginleft"
+                android:fontFamily="@font/poppins_semibold"
+                android:padding="@dimen/padding_8dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/normal_font_size" />
 
-        <com.google.android.material.button.MaterialButton
+            <TextView
+                android:id="@+id/agreement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="TextView"
+                android:textColorLink="@color/colorPrimary" />
+
+        </LinearLayout>
+
+
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/btnAgreementNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/btn_bg"
-            android:padding="@dimen/padding_8dp"
-            android:visibility="gone"
-            android:text="Next"
-            android:textColor="@color/white"
-            app:cornerRadius="@dimen/cardview_default_radius" />
+            android:layout_margin="@dimen/large_padding"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0.0px"
+            android:elevation="8dp"
+            app:cardBackgroundColor="@color/colorPrimary"
+            app:cardCornerRadius="@dimen/corner_radius_medium"
+            app:cardPreventCornerOverlap="false">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imageAgreementNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_8dp"
+                    android:src="@drawable/camera"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/textAgreementNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toRightOf="@id/imageAgreementNext"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_8dp"
+                    android:text="Accept and Proceed"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
 
         <Button
             android:id="@+id/btnUploadImage"

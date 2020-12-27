@@ -226,6 +226,7 @@
                 android:padding="@dimen/padding_8dp"
                 app:boxCornerRadiusBottomStart="@dimen/corner_radius_medium"
                 app:boxCornerRadiusTopEnd="@dimen/corner_radius_medium"
+                android:visibility="gone"
                 app:boxStrokeColor="@color/colorPrimary">
 
                 <AutoCompleteTextView

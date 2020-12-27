@@ -39,6 +39,7 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.card.MaterialCardView;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 
 public class UploadActivity extends AppCompatActivity {
@@ -49,7 +50,7 @@ public class UploadActivity extends AppCompatActivity {
     private TextView txtPercentage;
     private ImageView imgPreview;
     private VideoView vidPreview;
-    private Button btnUpload;
+    private MaterialCardView btnUpload;
     SharedPrefsManager sharedPrefsManager;
     long totalSize = 0;
 
@@ -58,13 +59,15 @@ public class UploadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
         backButton();
+        initToolbar();
         sharedPrefsManager = new SharedPrefsManager(this);
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+        backButton();
         txtPercentage = (TextView) findViewById(R.id.txtPercentage);
-        btnUpload = (Button) findViewById(R.id.btnUpload);
+        btnUpload =  findViewById(R.id.btnUpload);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         vidPreview = (VideoView) findViewById(R.id.videoPreview);
@@ -97,6 +100,13 @@ public class UploadActivity extends AppCompatActivity {
 
     }
 
+    private void initToolbar() {
+        TextView toolbarName;
+        toolbarName = findViewById(R.id.toolbar_name);
+        toolbarName.setText("Upload Image");
+    }
+
+
     public void dialogue() {
 
         MaterialDialog mDialog = new MaterialDialog.Builder(this)
@@ -108,10 +118,8 @@ public class UploadActivity extends AppCompatActivity {
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
                         if (sharedPrefsManager.getStringValue("imageType", "Human Centric").equals("Human Centric")) {
                             startActivity(new Intent(UploadActivity.this, MetaDataHumanCentric.class));
-                            finish();
                         } else {
                             startActivity(new Intent(UploadActivity.this, MetaDataNonHumanCentric.class));
-                            finish();
                         }
                     }
                 })
@@ -119,7 +127,6 @@ public class UploadActivity extends AppCompatActivity {
                     @Override
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
                         startActivity(new Intent(UploadActivity.this, ClassName.class));
-                        finish();
                     }
                 })
                 .build();
@@ -177,6 +184,18 @@ public class UploadActivity extends AppCompatActivity {
 
             // updating percentage value
             txtPercentage.setText(String.valueOf(progress[0]) + "%");
+        }
+
+        private void backButton() {
+            ImageView backButton = findViewById(R.id.toolbar_image);
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+
+
         }
 
         @Override
@@ -298,7 +317,6 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(UploadActivity.this,CameraUploadActivity.class));
-                finish();
             }
         });
     }
@@ -318,5 +336,7 @@ public class UploadActivity extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
+
+
 
 }

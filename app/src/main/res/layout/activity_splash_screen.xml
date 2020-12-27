@@ -67,7 +67,7 @@
                     android:tint="@color/colorPrimary"
                     app:lottie_autoPlay="true"
                     app:lottie_loop="true"
-                    app:lottie_rawRes="@raw/progress_bar_circle" />
+                    app:lottie_rawRes="@raw/loading_anim" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
