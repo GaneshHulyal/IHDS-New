@@ -3,7 +3,8 @@
 #Follow the below steps to run this project.
 KLE-Samsung Data Collection App is an Android Studio project and app module that can be directly cloned and imported into Android Studio.
 
-# Clone this repo using this URL: https://github.com/GaneshHulyal/AIDataLab.git
+# Clone this repo using below URL: 
+https://github.com/GaneshHulyal/AIDataLab.git
 
 - Paste code in Android-Studio-Project Directory.
 - Open the project in IDE.
