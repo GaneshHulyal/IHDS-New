@@ -1,12 +1,26 @@
 package in.ganeshhulyal.aidatalab.activities;
 
-import in.ganeshhulyal.aidatalab.R;
-import in.ganeshhulyal.aidatalab.others.AndroidMultiPartEntity;
-import in.ganeshhulyal.aidatalab.others.Config;
-import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.VideoView;
 
-import java.io.File;
-import java.io.IOException;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.card.MaterialCardView;
+import com.shreyaspatil.MaterialDialog.MaterialDialog;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,30 +34,17 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.StrictMode;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
+import java.io.File;
+import java.io.IOException;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.card.MaterialCardView;
-import com.shreyaspatil.MaterialDialog.MaterialDialog;
+import in.ganeshhulyal.aidatalab.R;
+import in.ganeshhulyal.aidatalab.others.AndroidMultiPartEntity;
+import in.ganeshhulyal.aidatalab.others.CheckInternet;
+import in.ganeshhulyal.aidatalab.others.Config;
+import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
 
 public class UploadActivity extends AppCompatActivity {
-    private static final String TAG = CameraUploadActivity.class.getSimpleName();
+    private static final String TAG = UserUploadMenuActivity.class.getSimpleName();
 
     private ProgressBar progressBar;
     private String filePath = null;
@@ -51,23 +52,28 @@ public class UploadActivity extends AppCompatActivity {
     private ImageView imgPreview;
     private VideoView vidPreview;
     private MaterialCardView btnUpload;
-    SharedPrefsManager sharedPrefsManager;
-    long totalSize = 0;
+    private SharedPrefsManager sharedPrefsManager;
+    private boolean exit = false;
+    private long totalSize = 0;
+    private Context context;
+    private CheckInternet checkInternet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
-        backButton();
         initToolbar();
         sharedPrefsManager = new SharedPrefsManager(this);
+        context = this;
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
         backButton();
+        toolbarClick();
+        checkInternet = new CheckInternet(this);
         txtPercentage = (TextView) findViewById(R.id.txtPercentage);
-        btnUpload =  findViewById(R.id.btnUpload);
+        btnUpload = findViewById(R.id.btnUpload);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         vidPreview = (VideoView) findViewById(R.id.videoPreview);
@@ -88,13 +94,16 @@ public class UploadActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),
                     "Sorry, file path is missing!", Toast.LENGTH_LONG).show();
         }
-
         btnUpload.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // uploading the file to server
-                new UploadFileToServer().execute();
+                if (checkInternet.isInternetAvailable()) {
+                    new UploadActivity.UploadFileToServer().execute();
+                } else {
+                    Toast.makeText(UploadActivity.this, "Internet not available", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -116,17 +125,15 @@ public class UploadActivity extends AppCompatActivity {
                 .setPositiveButton("Yes?", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
-                        if (sharedPrefsManager.getStringValue("imageType", "Human Centric").equals("Human Centric")) {
-                            startActivity(new Intent(UploadActivity.this, MetaDataHumanCentric.class));
-                        } else {
-                            startActivity(new Intent(UploadActivity.this, MetaDataNonHumanCentric.class));
-                        }
+                        startActivity(new Intent(UploadActivity.this, UserCategoryActivity.class));
+                        finish();
                     }
                 })
                 .setNegativeButton("No", R.drawable.ic_baseline_cancel_24, new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
-                        startActivity(new Intent(UploadActivity.this, ClassName.class));
+                        startActivity(new Intent(UploadActivity.this, UserFeedBackActivity.class));
+                        finish();
                     }
                 })
                 .build();
@@ -138,6 +145,72 @@ public class UploadActivity extends AppCompatActivity {
     /**
      * Displaying captured image/video on the screen
      */
+    public void  logoutDialogue() {
+
+        MaterialDialog mDialog = new MaterialDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Do you want to logout?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                        Toast.makeText(UploadActivity.this, "Logging out", Toast.LENGTH_SHORT).show();
+                        sharedPrefsManager.saveStringValue("userEmail", null);
+                        sharedPrefsManager.saveBoolValue("isLoggedIn", false);
+                        startActivity(new Intent(UploadActivity.this, UserLoginActivity.class));
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", R.drawable.ic_baseline_cancel_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                             dialogInterface.dismiss();
+                    }
+                })
+                .build();
+
+        // Show Dialog
+        mDialog.show();
+    }
+
+    private void toolbarClick() {
+        ImageView feedback,logout;
+        feedback=findViewById(R.id.toolbar_feedback);
+        logout=findViewById(R.id.toolbar_logout);
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UploadActivity.this, UserFeedBackActivity.class));
+                finish();
+
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutDialogue();
+
+            }
+        });
+
+        feedback.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Feedback", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        logout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+    }
+
     private void previewMedia(boolean isImage) {
         // Checking whether captured media is image or video
         if (isImage) {
@@ -191,6 +264,7 @@ public class UploadActivity extends AppCompatActivity {
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    startActivity(new Intent(UploadActivity.this, UserUploadMenuActivity.class));
                     finish();
                 }
             });
@@ -213,6 +287,7 @@ public class UploadActivity extends AppCompatActivity {
             String Category = sharedPrefsManager.getStringValue("categoryName", "Other");
             String subCategory = sharedPrefsManager.getStringValue("subCategoryName", "Other");
             String dataType = "Image";
+            String humanCentricAgreement = sharedPrefsManager.getStringValue("humanAgreementName", "Null");
             String location = sharedPrefsManager.getStringValue("location", "Null");
             String subLocation = sharedPrefsManager.getStringValue("subLocation", "Null");
             String timing = sharedPrefsManager.getStringValue("timing", "Null");
@@ -248,6 +323,7 @@ public class UploadActivity extends AppCompatActivity {
 
                 // Adding file data to http body
                 entity.addPart("image", new FileBody(sourceFile));
+                entity.addPart("humanAgreementName", new StringBody(humanCentricAgreement));
                 entity.addPart("Category", new StringBody(Category));
                 entity.addPart("SubCat", new StringBody(subCategory));
                 entity.addPart("imageType", new StringBody(imageType));
@@ -316,7 +392,8 @@ public class UploadActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(UploadActivity.this,CameraUploadActivity.class));
+                startActivity(new Intent(UploadActivity.this, UserUploadMenuActivity.class));
+                finish();
             }
         });
     }
@@ -337,6 +414,11 @@ public class UploadActivity extends AppCompatActivity {
         alert.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(UploadActivity.this, UserUploadMenuActivity.class));
+        finish();
+    }
 
 
 }

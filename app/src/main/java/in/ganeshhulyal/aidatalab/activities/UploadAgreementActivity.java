@@ -1,33 +1,24 @@
 package in.ganeshhulyal.aidatalab.activities;
 
-import androidx.annotation.IntegerRes;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
+
+/*Agreement Upload Activity- Activity after user registration page. User Needs to capture and
+upload agreement and check privacy policy then he can move to next activity */
+
 
 import android.Manifest;
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.text.Html;
-import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,78 +28,90 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.button.MaterialButton;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.card.MaterialCardView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.shreyaspatil.MaterialDialog.MaterialDialog;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import in.ganeshhulyal.aidatalab.BuildConfig;
 import in.ganeshhulyal.aidatalab.R;
 import in.ganeshhulyal.aidatalab.others.Config;
-import in.ganeshhulyal.aidatalab.others.DownloadHelper;
 import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
 
-public class AgreementActivity extends AppCompatActivity {
-    private static final String TAG = CameraUploadActivity.class.getSimpleName();
+public class UploadAgreementActivity extends AppCompatActivity {
+    private static final String TAG = UserUploadMenuActivity.class.getSimpleName();
 
 
     // Camera activity request codes
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
     private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
-    private static final int PERMISSION_REQUEST_CODE = 1 ;
+    private static final int PERMISSION_REQUEST_CODE = 1;
     private static final int REQUEST_CODE = 1;
     public SharedPrefsManager sharedPrefsManager;
     public String categoryName;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-
+    private boolean exit = false;
     private Uri fileUri; // file url to store image/video
-
-    TextView agreement;
+    private TextView agreement;
     private Button btnRecordVideo, btnUploadImage, btnUploadVideo;
-    private MaterialCardView btnCapturePicture,btnNext;
-    private CheckBox agreementCheckbox;
+    private MaterialCardView btnCapturePicture, btnNext;
+    private CheckBox agreementCheckbox, agreementCheckboxAnother;
     private Context context;
+    private TextView agreementAnother;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agreement);
-        if (ContextCompat.checkSelfPermission(AgreementActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(AgreementActivity.this, Manifest.permission_group.MICROPHONE) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, 100);
+        if (ContextCompat.checkSelfPermission(UploadAgreementActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(UploadAgreementActivity.this, Manifest.permission_group.MICROPHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 100);
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission_group.MICROPHONE}, 100);
 
         }
-        agreement=findViewById(R.id.agreement);
+        agreement = findViewById(R.id.agreement);
+        agreementAnother = findViewById(R.id.agreementAnother);
         customTextView(agreement);
+        customTextViewAnother(agreementAnother);
         //((TextView) findViewById(R.id.infoTxtCredits)).setMovementMethod(LinkMovementMethod.getInstance());
-        btnNext=findViewById(R.id.btnAgreementNext);
-        agreementCheckbox=findViewById(R.id.agreementCheckBox);
+        btnNext = findViewById(R.id.btnAgreementNext);
+        agreementCheckbox = findViewById(R.id.agreementCheckBox);
+        agreementCheckboxAnother = findViewById(R.id.agreementCheckBoxAnother);
         backButton();
-        context=this;
+        context = this;
+        floatingActionButton();
+        agreementCheckboxAnother.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (agreementCheckboxAnother.isChecked()) {
+                    btnNext.setVisibility(View.VISIBLE);
+                } else {
+                    btnNext.setVisibility(View.GONE);
+                }
+            }
+        });
+        toolbarClick();
         agreementCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(agreementCheckbox.isChecked()){
+                if (agreementCheckbox.isChecked() && agreementCheckboxAnother.isChecked()) {
                     btnNext.setVisibility(View.VISIBLE);
+                } else {
+                    btnNext.setVisibility(View.GONE);
                 }
             }
         });
 
-        if(new SharedPrefsManager(this).getBoolValue("isAllAgreementUploaded",false)){
-            startActivity(new Intent(AgreementActivity.this,ClassName.class));
+
+        if (new SharedPrefsManager(this).getBoolValue("isAllAgreementUploaded", false)) {
+            startActivity(new Intent(UploadAgreementActivity.this, UserCategoryActivity.class));
             finish();
         }
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -118,12 +121,19 @@ public class AgreementActivity extends AppCompatActivity {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(new SharedPrefsManager(context).getBoolValue("isAgreementUploaded",false)) {
-                    startActivity(new Intent(AgreementActivity.this, ClassName.class));
-                    new SharedPrefsManager(context).saveBoolValue("isAllAgreementUploaded",true);
-                    finish();
-                }
-                else{
+                if (new SharedPrefsManager(context).getBoolValue("isAgreementUploaded", false)) {
+                    if (sharedPrefsManager.getBoolValue("isFromRegister", false)) {
+                        startActivity(new Intent(UploadAgreementActivity.this, UserLoginActivity.class));
+                        Toast.makeText(context, "User Registered Successfully!", Toast.LENGTH_SHORT).show();
+                        new SharedPrefsManager(context).saveBoolValue("isAllAgreementUploaded", true);
+                        finish();
+                    } else {
+                        startActivity(new Intent(UploadAgreementActivity.this, UserCategoryActivity.class));
+                        Toast.makeText(context, "User Registered Successfully!", Toast.LENGTH_SHORT).show();
+                        new SharedPrefsManager(context).saveBoolValue("isAllAgreementUploaded", true);
+                        finish();
+                    }
+                } else {
                     Toast.makeText(context, "Please upload agreement first!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -175,7 +185,6 @@ public class AgreementActivity extends AppCompatActivity {
     }
 
 
-
     private void initToolbar() {
         TextView toolbarName;
         toolbarName = findViewById(R.id.toolbar_name);
@@ -197,6 +206,72 @@ public class AgreementActivity extends AppCompatActivity {
         }
     }
 
+    public void logoutDialogue() {
+
+        MaterialDialog mDialog = new MaterialDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Do you want to logout?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                        Toast.makeText(UploadAgreementActivity.this, "Logging out", Toast.LENGTH_SHORT).show();
+                        sharedPrefsManager.saveStringValue("userEmail", null);
+                        sharedPrefsManager.saveBoolValue("isLoggedIn", false);
+                        startActivity(new Intent(UploadAgreementActivity.this, UserLoginActivity.class));
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", R.drawable.ic_baseline_cancel_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                        finish();
+                    }
+                })
+                .build();
+
+        // Show Dialog
+        mDialog.show();
+    }
+
+    private void toolbarClick() {
+        ImageView feedback, logout;
+        feedback = findViewById(R.id.toolbar_feedback);
+        logout = findViewById(R.id.toolbar_logout);
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UploadAgreementActivity.this, UserFeedBackActivity.class));
+                finish();
+
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutDialogue();
+
+            }
+        });
+
+        feedback.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Feedback", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        logout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+    }
+
     /**
      * Launching camera app to capture image
      */
@@ -209,6 +284,16 @@ public class AgreementActivity extends AppCompatActivity {
 
         // start the image capture Intent
         startActivityForResult(intent, CAMERA_CAPTURE_IMAGE_REQUEST_CODE);
+    }
+
+    public void requestRuntimePermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(context,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
     }
 
     /**
@@ -228,8 +313,6 @@ public class AgreementActivity extends AppCompatActivity {
         // start the video capture Intent
         startActivityForResult(intent, CAMERA_CAPTURE_VIDEO_REQUEST_CODE);
     }
-
-
 
     /**
      * Here we store the file url as it will be null after returning from camera
@@ -255,24 +338,31 @@ public class AgreementActivity extends AppCompatActivity {
     private void customTextView(TextView view) {
         SpannableStringBuilder spanTxt = new SpannableStringBuilder(
                 "I agree to the ");
+        spanTxt.append("Privacy Policy");
+        spanTxt.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+
+                Toast.makeText(getApplicationContext(), "Terms of services",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }, spanTxt.length() - "Term of services".length(), spanTxt.length(), 0);
+        view.setMovementMethod(LinkMovementMethod.getInstance());
+        view.setText(spanTxt, TextView.BufferType.SPANNABLE);
+    }
+
+    private void customTextViewAnother(TextView view) {
+        SpannableStringBuilder spanTxt = new SpannableStringBuilder(
+                "I agree to the ");
         spanTxt.append("Term of services");
         spanTxt.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
+                startActivity(new Intent(UploadAgreementActivity.this, PrivacyPolicyActivity.class));
                 Toast.makeText(getApplicationContext(), "Terms of services Clicked",
                         Toast.LENGTH_SHORT).show();
             }
         }, spanTxt.length() - "Term of services".length(), spanTxt.length(), 0);
-        spanTxt.append(" and");
-        spanTxt.setSpan(new ForegroundColorSpan(Color.BLACK), 32, spanTxt.length(), 0);
-        spanTxt.append(" Privacy Policy");
-        spanTxt.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                Toast.makeText(getApplicationContext(), "Privacy Policy Clicked",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }, spanTxt.length() - " Privacy Policy".length(), spanTxt.length(), 0);
         view.setMovementMethod(LinkMovementMethod.getInstance());
         view.setText(spanTxt, TextView.BufferType.SPANNABLE);
     }
@@ -330,10 +420,11 @@ public class AgreementActivity extends AppCompatActivity {
     }
 
     private void launchUploadActivity(boolean isImage) {
-        Intent i = new Intent(AgreementActivity.this, UploadAgreement.class);
+        Intent i = new Intent(UploadAgreementActivity.this, UploadAgreementActivity.class);
         i.putExtra("filePath", fileUri.getPath());
         i.putExtra("isImage", isImage);
         startActivity(i);
+        finish();
     }
 
     /**
@@ -344,6 +435,7 @@ public class AgreementActivity extends AppCompatActivity {
      * Creating file uri to store image/video
      */
     public Uri getOutputMediaFileUri(int type) {
+        requestRuntimePermission();
         return Uri.fromFile(getOutputMediaFile(type));
     }
 
@@ -388,13 +480,56 @@ public class AgreementActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent a = new Intent(Intent.ACTION_MAIN);
-                a.addCategory(Intent.CATEGORY_HOME);
-                a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(a);
+                if (exit) {
+                    finish();
+                    moveTaskToBack(true);
+                } else {
+                    Toast.makeText(context, "Press Back again to Exit.",
+                            Toast.LENGTH_SHORT).show();
+                    exit = true;
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            exit = false;
+                        }
+                    }, 3 * 1000);
+
+                }
             }
         });
 
 
     }
+
+    private void floatingActionButton(){
+        FloatingActionButton fab=findViewById(R.id.floating_action_button);
+        SharedPrefsManager sharedPrefsManager=new SharedPrefsManager(this);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPrefsManager.saveBoolValue("isFromLogin",false);
+                startActivity(new Intent(UploadAgreementActivity.this,DownloadAgreementActivity.class));
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (exit) {
+            finish();
+            moveTaskToBack(true);
+        } else {
+            Toast.makeText(this, "Press Back again to Exit.",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 3 * 1000);
+
+        }
+    }
+
 }

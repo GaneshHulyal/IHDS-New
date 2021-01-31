@@ -3,7 +3,6 @@ package in.ganeshhulyal.aidatalab.models;
 public class MetaDataResponseModel {
     protected String status;
     protected String message;
-
     public String getStatus() {
         return status;
     }

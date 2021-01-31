@@ -1,7 +1,5 @@
 package in.ganeshhulyal.aidatalab.Retrofit.Interfaces;
 
-import org.json.JSONObject;
-
 import in.ganeshhulyal.aidatalab.models.ResponseModel;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -13,7 +11,7 @@ public interface UserService {
 
     @FormUrlEncoded
     @POST("api/Users/addUser.php")
-    Call<ResponseBody> insertUser(
+    Call<ResponseModel> insertUser(
             @Field("firstName") String firstName,
             @Field("lastName") String lastName,
             @Field("mobileNumber") String mobileNumber,
@@ -35,5 +33,27 @@ public interface UserService {
             @Field("Category") String Category,
             @Field("userName") String userName
     );
+
+    @FormUrlEncoded
+    @POST("api/Users/emailValidation.php")
+    Call<ResponseModel> checkEmail(
+            @Field("email") String email
+            );
+
+
+    @FormUrlEncoded
+    @POST("api/Users/mobileNumberValidation.php")
+    Call<ResponseModel> checkMobileNumber(
+            @Field("mobileNumber") String mobileNumber
+    );
+
+    @FormUrlEncoded
+    @POST("storeFeedback.php")
+    Call<ResponseModel> addFeedBack(
+            @Field("userName") String userName,
+            @Field("feedback") String feedback
+    );
+
+
 
 }

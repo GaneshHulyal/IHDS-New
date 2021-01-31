@@ -1,6 +1,6 @@
 package in.ganeshhulyal.aidatalab.models;
 
-public class MetaDataModelHumanCentric {
+public class HumanCentricMetaDataModel {
 
     private String locationType;
     private String subLocation;
@@ -17,7 +17,7 @@ public class MetaDataModelHumanCentric {
     private String isAboveEighteen;
     private String isConsenObtained;
 
-    public MetaDataModelHumanCentric(String locationType, String subLocation, String timing, String lighting, String deviceUsed, String imageOrientation, String resolution, String dslrAndMobilePaired, String dataMajorCategory, String isHumanCentric, String selfie, String type, String isAboveEighteen, String isConsenObtained) {
+    public HumanCentricMetaDataModel(String locationType, String subLocation, String timing, String lighting, String deviceUsed, String imageOrientation, String resolution, String dslrAndMobilePaired, String dataMajorCategory, String isHumanCentric, String selfie, String type, String isAboveEighteen, String isConsenObtained) {
         this.locationType = locationType;
         this.subLocation = subLocation;
         this.timing = timing;

@@ -7,5 +7,5 @@ public class Config {
     public static final String HUMAN_CENTRIC_AGREEMENT_UPLOAD_URL = "http://210.212.192.31/uploadHumanCentricAgreement.php";
 
     // Directory name to store captured images and videos
-    public static final String IMAGE_DIRECTORY_NAME = "Android File Upload";
+    public static final String IMAGE_DIRECTORY_NAME = ".KLE-SAMSUNG Data Capture Framework";
 }

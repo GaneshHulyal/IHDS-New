@@ -1,95 +1,89 @@
 package in.ganeshhulyal.aidatalab.activities;
 
-import androidx.annotation.NonNull;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.balsikandar.crashreporter.CrashReporter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
-import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import in.ganeshhulyal.aidatalab.R;
 import in.ganeshhulyal.aidatalab.models.ResponseModel;
 import in.ganeshhulyal.aidatalab.others.MyClient;
 import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class UserLoginActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
     private TextInputEditText userEmailEdit, userPasswordEdit;
     private TextView toolbarName;
     private TextInputLayout userEmailLayout, userPasswordLayout;
     private String Email, Password;
-    Button loginButton, backToRegister;
+    private Button loginButton, backToRegister;
     private String email;
-    SharedPrefsManager sharedPrefsManager;
-    TextView resetPassword;
-    SharedPrefsManager SharedPref;
+    private SharedPrefsManager sharedPrefsManager;
+    private TextView resetPassword;
+    private SharedPrefsManager SharedPref;
     private FirebaseAuth mAuth;
+    private boolean exit = false;
+    private Context context;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        context = this;
         init();
-        initToolbar();
+///        initToolbar();
         main();
-        backButton();
-        if(checkPermission()){
-            Log.d("Msg","Permission alreday granted");
-        }else{
+
+        if (checkPermission()) {
+            Log.d("Msg", "Permission alreday granted");
+        } else {
             requestPermission();
+        }
+        if (sharedPrefsManager.getBoolValue("isLoggedIn", false)) {
+            //startActivity(new Intent(LoginActivity.this, AgreementActivity.class));
+            //finish();
         }
 
     }
 
-    private void backButton() {
-        ImageView backButton = findViewById(R.id.toolbar_image);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, UserRegistration.class));
-                finish();
-            }
-        });
-    }
 
     private void main() {
         Log.d("Msg", Email + " " + Password);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Email = userEmailEdit.getText().toString();
-                Password = userPasswordEdit.getText().toString();
+                Email = userEmailEdit.getText().toString().trim();
+                Password = userPasswordEdit.getText().toString().trim();
                 if (Email.isEmpty() || Email.length() < 5) {
                     userEmailLayout.setError("Invalid Email");
-                } else if (Password.isEmpty()) {
+                } else {
+                    userEmailLayout.setError(null);
+                }
+                if (Password.isEmpty()) {
                     userPasswordLayout.setError("Invalid Password");
                 } else {
+                    userPasswordLayout.setError(null);
                     Call<ResponseModel> call = MyClient.getInstance().getMyApi().userLogin(Email, Password);
                     call.enqueue(new Callback<ResponseModel>() {
                         @Override
@@ -97,23 +91,29 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d("Msg", response.toString());
                             if (response.isSuccessful()) {
                                 if (response.body().isAuthenticated()) {
-                                    Toast.makeText(LoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
-                                    sharedPrefsManager.saveStringValue("userEmail", response.body().getEmail());
-                                    sharedPrefsManager.saveBoolValue("isLoggedIn", true);
-                                    startActivity(new Intent(LoginActivity.this, AgreementActivity.class));
-                                    finish();
+                                    if (response.body().isVerified()) {
+                                        Toast.makeText(UserLoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                                        sharedPrefsManager.saveStringValue("userEmail", response.body().getEmail());
+                                        sharedPrefsManager.saveBoolValue("isLoggedIn", true);
+                                        sharedPrefsManager.saveBoolValue("isFromRegister", false);
+                                        sharedPrefsManager.saveLongValue("ExpiredDate", System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1));
+                                        startActivity(new Intent(UserLoginActivity.this, UploadAgreementActivity.class));
+                                        finish();
+                                    } else {
+                                        Toast.makeText(UserLoginActivity.this, "Waiting for admin approval.", Toast.LENGTH_SHORT).show();
+                                    }
                                 } else {
-                                    Toast.makeText(LoginActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(UserLoginActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(LoginActivity.this, "Something went wrong" + response.code(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(UserLoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<ResponseModel> call, Throwable t) {
                             Log.e("Msg", t.toString());
-                            Toast.makeText(LoginActivity.this, "No Users Found!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UserLoginActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -146,10 +146,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void initToolbar() {
-        toolbarName.setText("Login");
-    }
-
     private void init() {
         try {
             // Do your stuff
@@ -157,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
             CrashReporter.logException(e);
         }
 
-        toolbarName = findViewById(R.id.toolbar_name);
+        //toolbarName = findViewById(R.id.toolbar_name);
         userPasswordLayout = findViewById(R.id.userPasswordLayout);
         userEmailLayout = findViewById(R.id.userUSNLayout);
         userEmailEdit = findViewById(R.id.userEmail);
@@ -172,14 +168,14 @@ public class LoginActivity extends AppCompatActivity {
         backToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, UserRegistration.class));
-                finish();
+                sharedPrefsManager.saveBoolValue("isFromLogin", true);
+                startActivity(new Intent(UserLoginActivity.this, DownloadAgreementActivity.class));
             }
         });
     }
 
     private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(LoginActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int result = ContextCompat.checkSelfPermission(UserLoginActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (result == PackageManager.PERMISSION_GRANTED) {
             return true;
         } else {
@@ -188,10 +184,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(LoginActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Toast.makeText(LoginActivity.this, "Write External Storage permission allows us to save files. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
+        if (ActivityCompat.shouldShowRequestPermissionRationale(UserLoginActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(UserLoginActivity.this, "Write External Storage permission allows us to save files. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
         } else {
-            ActivityCompat.requestPermissions(LoginActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+            ActivityCompat.requestPermissions(UserLoginActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
         }
     }
 
@@ -207,4 +203,26 @@ public class LoginActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        if (exit)
+            moveTaskToBack(true);
+        else {
+            Toast.makeText(this, "Press Back again to Exit.",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 3 * 1000);
+
+        }
+
+    }
+
+
 }
+

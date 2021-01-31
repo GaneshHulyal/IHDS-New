@@ -1,15 +1,14 @@
 package in.ganeshhulyal.aidatalab.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import in.ganeshhulyal.aidatalab.R;
 
-public class SplashScreen extends AppCompatActivity {
+public class SplashScreenActivity extends AppCompatActivity {
 
     private final int SPLASH_DISPLAY_LENGTH = 4000;
 
@@ -26,9 +25,9 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void run() {
                 /* Create an Intent that will start the Menu-Activity. */
-                Intent mainIntent = new Intent(SplashScreen.this, LoginActivity.class);
-                SplashScreen.this.startActivity(mainIntent);
-                SplashScreen.this.finish();
+                Intent mainIntent = new Intent(SplashScreenActivity.this, UserLoginActivity.class);
+                SplashScreenActivity.this.startActivity(mainIntent);
+                SplashScreenActivity.this.finish();
             }
         }, SPLASH_DISPLAY_LENGTH);
     }

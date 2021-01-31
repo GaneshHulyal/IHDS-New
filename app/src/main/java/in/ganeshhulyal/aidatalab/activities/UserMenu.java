@@ -1,17 +1,14 @@
 package in.ganeshhulyal.aidatalab.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.card.MaterialCardView;
+import androidx.appcompat.app.AppCompatActivity;
 
-import java.text.BreakIterator;
+import com.google.android.material.card.MaterialCardView;
 
 import in.ganeshhulyal.aidatalab.R;
 import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
@@ -19,8 +16,8 @@ import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
 public class UserMenu extends AppCompatActivity {
 
 
-    MaterialCardView nonHumanCentric, humanCentric;
-    SharedPrefsManager sharedPrefsManager;
+    private MaterialCardView nonHumanCentric, humanCentric;
+    private SharedPrefsManager sharedPrefsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +26,17 @@ public class UserMenu extends AppCompatActivity {
         init();
         backButton();
         initToolbar();
+        if(sharedPrefsManager.getStringValue("subCategoryName",null).equals("People Centric")){
+            startActivity(new Intent(UserMenu.this, UploadHumanCentricAgreementActivity.class));
+            sharedPrefsManager.saveStringValue("imageType", "Human Centric");
+            finish();
+        }
+        else{
+            startActivity(new Intent(UserMenu.this, MetaDataNonHumanCentricActivity.class));
+            sharedPrefsManager.saveStringValue("imageType", "Non Human Centric");
+            sharedPrefsManager.saveStringValue("humanAgreementName", "Null");
+            finish();
+        }
     }
 
     private void init() {
@@ -38,7 +46,8 @@ public class UserMenu extends AppCompatActivity {
         nonHumanCentric.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(UserMenu.this, MetaDataNonHumanCentric.class));
+                startActivity(new Intent(UserMenu.this, MetaDataNonHumanCentricActivity.class));
+                finish();
                 sharedPrefsManager.saveStringValue("imageType", "Non Human Centric");
             }
         });
@@ -46,7 +55,7 @@ public class UserMenu extends AppCompatActivity {
         humanCentric.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(UserMenu.this, HumanCentricAgreement.class));
+                startActivity(new Intent(UserMenu.this, UploadHumanCentricAgreementActivity.class));
                 sharedPrefsManager.saveStringValue("imageType", "Human Centric");
                 finish();
             }
@@ -63,8 +72,15 @@ public class UserMenu extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(UserMenu.this,ClassName.class));
+                startActivity(new Intent(UserMenu.this, UserCategoryActivity.class));
+                finish();
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
+
 }

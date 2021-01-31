@@ -1,185 +1,332 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    android:orientation="vertical"
-    android:weightSum="100"
-    tools:context=".activities.UploadActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activities.UserUploadMenuActivity">
 
-    <include
-        android:id="@+id/toolbar_agreement"
-        layout="@layout/toolbar_item" />
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <TextView
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorBackground"
+            android:orientation="vertical"
+            android:weightSum="100"
+            tools:context=".activities.UploadActivity">
+
+            <include
+                android:id="@+id/toolbar_agreement"
+                layout="@layout/toolbar_item" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="5"
+                android:fontFamily="@font/poppins_semibold"
+                android:padding="@dimen/padding_14dp"
+                android:text="Data Upload"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/heading_size" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <!-- Capture picture button -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnCapturePicture"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/large_padding"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="0.0px"
+                    android:elevation="8dp"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    app:cardCornerRadius="@dimen/corner_radius_medium"
+                    app:cardPreventCornerOverlap="false">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/captureImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/padding_8dp"
+                            android:src="@drawable/camera" />
+
+                        <TextView
+                            android:id="@+id/textCapture"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toRightOf="@id/captureImage"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:gravity="center"
+                            android:padding="@dimen/padding_8dp"
+                            android:text="Capture Image"
+                            android:textColor="@color/white" />
+
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_8dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/padding_8dp"
+                        android:src="@drawable/ic_baseline_info_24" />
+
+                    <TextView
+                        android:id="@+id/uploadinCapture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:padding="@dimen/padding_8dp"
+                        android:textAlignment="center"
+                        android:text="One time capture"
+                        android:textSize="@dimen/normal_font_size" />
+
+                </LinearLayout>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnUploadImage"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/large_padding"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    app:cardCornerRadius="@dimen/corner_radius_medium">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/uploadImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/padding_8dp"
+                            android:src="@drawable/upload_image" />
+
+                        <TextView
+                            android:id="@+id/textUploadImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toRightOf="@id/uploadImage"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:padding="@dimen/padding_8dp"
+                            android:text="Upload Image"
+                            android:textColor="@color/white" />
+
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_8dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/padding_8dp"
+                        android:src="@drawable/ic_baseline_info_24" />
+
+                    <TextView
+                        android:id="@+id/uploadingTextCapture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:padding="@dimen/padding_8dp"
+                        android:textAlignment="center"
+                        android:text="Multiple uploads"
+                        android:textSize="@dimen/normal_font_size" />
+
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnRecordVideo"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/large_padding"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="0.0px"
+                    android:elevation="8dp"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    app:cardCornerRadius="@dimen/corner_radius_medium"
+                    app:cardPreventCornerOverlap="false">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageHumanCentric"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/padding_8dp"
+                            android:src="@drawable/record_video" />
+
+                        <TextView
+                            android:id="@+id/textHumanCentric"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toRightOf="@id/imageHumanCentric"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:gravity="center"
+                            android:padding="@dimen/padding_8dp"
+                            android:text="Record Video"
+                            android:textColor="@color/white" />
+
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/padding_8dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/padding_8dp"
+                        android:src="@drawable/ic_baseline_info_24" />
+
+                    <TextView
+                        android:id="@+id/captureVideoText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-condensed"
+                        android:padding="@dimen/padding_8dp"
+                        android:text="One time record"
+                        android:textSize="@dimen/normal_font_size" />
+
+                </LinearLayout>
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnUploadVideo"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/large_padding"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    app:cardCornerRadius="@dimen/corner_radius_medium">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imageHumanNonCentric"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/padding_8dp"
+                            android:src="@drawable/upload_video" />
+
+                        <TextView
+                            android:id="@+id/textHumanNonCentric"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toRightOf="@id/imageHumanNonCentric"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:padding="@dimen/padding_8dp"
+                            android:text="Upload Video"
+                            android:textColor="@color/white" />
+
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/padding_8dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/padding_8dp"
+                        android:src="@drawable/ic_baseline_info_24"/>
+                    <TextView
+                        android:id="@+id/uploadingVideoText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="Multiple uploads"
+                        android:fontFamily="sans-serif-condensed"
+                        android:textSize="@dimen/normal_font_size"
+                        android:padding="@dimen/padding_8dp"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_semibold"
-        android:padding="@dimen/padding_14dp"
-        android:text="Upload Menu"
-        android:layout_weight="5"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/heading_size" />
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/footerView"
+        app:tint="@color/white"
+        android:contentDescription="Sample Description Goes Here"
+        android:src="@drawable/ic_baseline_cloud_download_24"/>
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:id="@+id/footerView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="vertical" >
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-        <!-- Capture picture button -->
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnCapturePicture"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/corner_radius_medium"
-            android:layout_margin="@dimen/large_padding"
-            app:cardBackgroundColor="@color/colorPrimary"
-            android:elevation="8dp"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0.0px"
-            android:clipToPadding="false"
-            android:clipChildren="false"
-            app:cardPreventCornerOverlap="false">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/captureImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_8dp"
-                    android:src="@drawable/camera"/>
-
-                <TextView
-                    android:id="@+id/textCapture"
-                    android:layout_width="wrap_content"
-                    android:padding="@dimen/padding_8dp"
-                    android:layout_toRightOf="@id/captureImage"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="Capture Image"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/poppins_semibold"/>
-
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnUploadImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/corner_radius_medium"
-            android:layout_margin="@dimen/large_padding"
-            app:cardBackgroundColor="@color/colorPrimary">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/uploadImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_8dp"
-                    android:src="@drawable/upload_image"/>
-
-                <TextView
-                    android:id="@+id/textUploadImage"
-                    android:layout_width="wrap_content"
-                    android:padding="@dimen/padding_8dp"
-                    android:layout_toRightOf="@id/uploadImage"
-                    android:layout_height="wrap_content"
-                    android:text="Upload Image"
-                    android:layout_centerInParent="true"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/poppins_semibold"/>
-
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnRecordVideo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/corner_radius_medium"
-            android:layout_margin="@dimen/large_padding"
-            app:cardBackgroundColor="@color/colorPrimary"
-            android:elevation="8dp"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0.0px"
-            android:clipToPadding="false"
-            android:clipChildren="false"
-            app:cardPreventCornerOverlap="false">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imageHumanCentric"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_8dp"
-                    android:src="@drawable/record_video"/>
-
-                <TextView
-                    android:id="@+id/textHumanCentric"
-                    android:layout_width="wrap_content"
-                    android:padding="@dimen/padding_8dp"
-                    android:layout_toRightOf="@id/imageHumanCentric"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="Record Video"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/poppins_semibold"/>
-
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btnUploadVideo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="@dimen/corner_radius_medium"
-            android:layout_margin="@dimen/large_padding"
-            app:cardBackgroundColor="@color/colorPrimary">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imageHumanNonCentric"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/padding_8dp"
-                    android:src="@drawable/upload_video"/>
-
-                <TextView
-                    android:id="@+id/textHumanNonCentric"
-                    android:layout_width="wrap_content"
-                    android:padding="@dimen/padding_8dp"
-                    android:layout_toRightOf="@id/imageHumanNonCentric"
-                    android:layout_height="wrap_content"
-                    android:text="Upload Video"
-                    android:layout_centerInParent="true"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/poppins_semibold"/>
-
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-
+        <include
+            android:id="@+id/register_toolbar"
+            layout="@layout/footer_layout" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

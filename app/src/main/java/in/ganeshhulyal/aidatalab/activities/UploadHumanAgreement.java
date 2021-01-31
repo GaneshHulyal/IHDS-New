@@ -1,8 +1,7 @@
 package in.ganeshhulyal.aidatalab.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,12 +11,13 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.card.MaterialCardView;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
@@ -39,12 +39,13 @@ import java.io.IOException;
 
 import in.ganeshhulyal.aidatalab.R;
 import in.ganeshhulyal.aidatalab.others.AndroidMultiPartEntity;
+import in.ganeshhulyal.aidatalab.others.CheckInternet;
 import in.ganeshhulyal.aidatalab.others.Config;
 import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
 
 public class UploadHumanAgreement extends AppCompatActivity {
 
-    private static final String TAG = CameraUploadActivity.class.getSimpleName();
+    private static final String TAG = UserUploadMenuActivity.class.getSimpleName();
 
     private ProgressBar progressBar;
     private String filePath = null;
@@ -52,8 +53,11 @@ public class UploadHumanAgreement extends AppCompatActivity {
     private ImageView imgPreview;
     private VideoView vidPreview;
     private MaterialCardView btnUpload;
-    SharedPrefsManager sharedPrefsManager;
-    long totalSize = 0;
+    private SharedPrefsManager sharedPrefsManager;
+    private long totalSize = 0;
+    private CheckInternet checkInternet;
+    private Context context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,18 +65,20 @@ public class UploadHumanAgreement extends AppCompatActivity {
         setContentView(R.layout.activity_upload_human_agreement);
         sharedPrefsManager = new SharedPrefsManager(this);
         initToolbar();
-
         backButton();
 
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+        context = this;
+        checkInternet = new CheckInternet(this);
         txtPercentage = (TextView) findViewById(R.id.txtPercentage);
         btnUpload = findViewById(R.id.btnUpload);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         imgPreview = (ImageView) findViewById(R.id.imgPreview);
         vidPreview = (VideoView) findViewById(R.id.videoPreview);
+        toolbarClick();
         // Changing action bar background color
         //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(getResources().getString(R.color.action_bar))));
 
@@ -93,21 +99,93 @@ public class UploadHumanAgreement extends AppCompatActivity {
                     "Sorry, file path is missing!", Toast.LENGTH_LONG).show();
         }
 
+
         btnUpload.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 // uploading the file to server
-                new UploadFileToServer().execute();
+                if (checkInternet.isInternetAvailable()) {
+                    new UploadFileToServer().execute();
+                } else {
+                    Toast.makeText(UploadHumanAgreement.this, "Internet not available", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
     }
 
+
     private void initToolbar() {
         TextView toolbarName;
         toolbarName = findViewById(R.id.toolbar_name);
         toolbarName.setText("Human Centric");
+    }
+
+    public void logoutDialogue() {
+
+        MaterialDialog mDialog = new MaterialDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Do you want to logout?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                        Toast.makeText(UploadHumanAgreement.this, "Logging out", Toast.LENGTH_SHORT).show();
+                        sharedPrefsManager.saveStringValue("userEmail", null);
+                        sharedPrefsManager.saveBoolValue("isLoggedIn", false);
+                        startActivity(new Intent(UploadHumanAgreement.this, UserLoginActivity.class));
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", R.drawable.ic_baseline_cancel_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .build();
+
+        // Show Dialog
+        mDialog.show();
+    }
+
+    private void toolbarClick() {
+        ImageView feedback, logout;
+        feedback = findViewById(R.id.toolbar_feedback);
+        logout = findViewById(R.id.toolbar_logout);
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UploadHumanAgreement.this, UserFeedBackActivity.class));
+                finish();
+
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutDialogue();
+
+            }
+        });
+
+        feedback.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Feedback", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        logout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
     }
 
 
@@ -120,14 +198,15 @@ public class UploadHumanAgreement extends AppCompatActivity {
                 .setPositiveButton("Yes?", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
-                        startActivity(new Intent(UploadHumanAgreement.this, HumanCentricAgreement.class));
+                        startActivity(new Intent(UploadHumanAgreement.this, UploadHumanCentricAgreementActivity.class));
+                        finish();
                     }
                 })
                 .setNegativeButton("No", R.drawable.ic_baseline_cancel_24, new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                        startActivity(new Intent(UploadHumanAgreement.this, MetaDataHumanCentricActivity.class));
                         finish();
-                        System.exit(0);
                     }
                 })
                 .build();
@@ -241,8 +320,10 @@ public class UploadHumanAgreement extends AppCompatActivity {
 
                 int statusCode = response.getStatusLine().getStatusCode();
                 if (statusCode == 200) {
+                    sharedPrefsManager.saveStringValue("humanAgreementName", EntityUtils.toString(r_entity));
                     // Server response
-                    responseString = EntityUtils.toString(r_entity);
+                    responseString = EntityUtils.toString(r_entity, "UTF-8");
+
                 } else {
                     responseString = "Error occurred! Http Status Code: "
                             + statusCode;
@@ -265,7 +346,7 @@ public class UploadHumanAgreement extends AppCompatActivity {
             // showing the server response in an alert dialog
             //showAlert(result);
             Toast.makeText(UploadHumanAgreement.this, "Agreement Uploaded", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(UploadHumanAgreement.this, MetaDataHumanCentric.class));
+            dialogue();
             super.onPostExecute(result);
         }
 
@@ -292,11 +373,19 @@ public class UploadHumanAgreement extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(UploadHumanAgreement.this, UploadHumanCentricAgreementActivity.class));
                 finish();
             }
         });
 
 
     }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(UploadHumanAgreement.this, UploadHumanCentricAgreementActivity.class));
+        finish();
+    }
+
 
 }

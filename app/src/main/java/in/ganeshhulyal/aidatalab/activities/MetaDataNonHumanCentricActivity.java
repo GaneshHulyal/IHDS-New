@@ -1,16 +1,10 @@
 package in.ganeshhulyal.aidatalab.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -19,57 +13,71 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.chip.Chip;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.shreyaspatil.MaterialDialog.MaterialDialog;
 
 import in.ganeshhulyal.aidatalab.R;
 import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
 
-import static in.ganeshhulyal.aidatalab.R.layout.dropdown_menu_popup_item;
+public class MetaDataNonHumanCentricActivity extends AppCompatActivity {
 
-public class MetaDataHumanCentric extends AppCompatActivity {
-
-    private AutoCompleteTextView dataMajorCategory, humanPresentView, selfieView, typeView, aboveEighteenView, props, consentView;
+    private AutoCompleteTextView dataMajorCategory;
     private AutoCompleteTextView timingView;
     private AutoCompleteTextView subLocationView;
     private AutoCompleteTextView locationView;
     private AutoCompleteTextView lightingView;
     private Button addMetaData;
-    private String categoryString, timingString, subLocationString, locationString, lightingString, humanPresentString, selfieString, typeString, aboveEighteenString, consentString, propsString;
+    private String categoryString, timingString, subLocationString, locationString, lightingString;
     private SharedPrefsManager sharedPrefsManager;
     private TextInputEditText subLocationOther, lightingOther;
     private TextInputLayout subLocationOtherLayout, lightingOtherLayout;
-    Context context;
+    private Context context;
+    private TextView catView,subCatView;
+    private String catName,subCatName;
+    private Chip chipCategory,chipSubcategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_meta_data_human_centric);
+        setContentView(R.layout.activity_meta_data_non_human_centric);
         context = this;
         backButton();
         initToolbar();
+        toolbarClick();
         init();
+        floatingActionButton();
     }
 
     private void initToolbar() {
         TextView toolbarName;
         toolbarName = findViewById(R.id.toolbar_name);
-        toolbarName.setText("Human Centric");
+        toolbarName.setText("Non Human Centric");
     }
 
 
     public String getScreenSize() {
-
         DisplayMetrics displayMetrics = new DisplayMetrics();
-
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
         int width = displayMetrics.widthPixels;
-
         int height = displayMetrics.heightPixels;
-
         return width + "x" + height;
+    }
 
+    private void floatingActionButton(){
+        FloatingActionButton fab=findViewById(R.id.floating_action_button);
+        SharedPrefsManager sharedPrefsManager=new SharedPrefsManager(this);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPrefsManager.saveBoolValue("isFromLogin",false);
+                startActivity(new Intent(MetaDataNonHumanCentricActivity.this,DownloadAgreementActivity.class));
+            }
+        });
     }
 
     @Override
@@ -81,45 +89,31 @@ public class MetaDataHumanCentric extends AppCompatActivity {
         String[] subLocationOutdoor = new String[]{"Road", "Beach", "In water", "Mountain", "Desert", "Natural Landscape", "Forest", "Other"};
         String[] timing = new String[]{"Sunrise", "Morning", "Forenoon", "Noon", "Afternoon", "Evening", "Night"};
         String[] lighting = new String[]{"Incandescent", "Florescent", "Diffused", "Natural Light", "Other"};
-        String[] humanPresent = new String[]{"Yes"};
-        String[] selfie = new String[]{"Yes", "No"};
-        String[] type = new String[]{"Single", "Group", "Crowd", "Image of Human"};
-        String[] aboveEighteen = new String[]{"Yes", "No"};
-        String[] Consent = new String[]{"Yes"};
-
 
         ArrayAdapter catAdapter =
                 new ArrayAdapter<>(
                         this,
-                        dropdown_menu_popup_item,
+                        R.layout.dropdown_menu_popup_item,
                         dataCat);
 
         AutoCompleteTextView editTextFilledExposedDropdownCat =
                 dataMajorCategory.findViewById(R.id.data_major_category);
         editTextFilledExposedDropdownCat.setAdapter(catAdapter);
 
-//        ArrayAdapter subLocationAdapter =
-//                new ArrayAdapter<>(this, R.layout.dropdown_menu_popup_item, subLocationIndoor);
-//
-//        AutoCompleteTextView editTextFilledExposedDropdownSubLoc =
-//                subLocationView.findViewById(R.id.sub_location);
-//        editTextFilledExposedDropdownSubLoc.setAdapter(subLocationAdapter);
-
 
         ArrayAdapter locationAdapter =
                 new ArrayAdapter<>(
                         this,
-                        dropdown_menu_popup_item,
+                        R.layout.dropdown_menu_popup_item,
                         locationType);
+
         AutoCompleteTextView editTextFilledExposedDropdownLocation =
                 locationView.findViewById(R.id.location_type);
         editTextFilledExposedDropdownLocation.setAdapter(locationAdapter);
-
         locationView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String location = locationView.getText().toString();
-                Toast.makeText(MetaDataHumanCentric.this, location, Toast.LENGTH_SHORT).show();
                 if (location.equals("Indoor")) {
                     ArrayAdapter subLocationAdapter =
                             new ArrayAdapter<String>(context, R.layout.dropdown_menu_popup_item, subLocationIndoor);
@@ -133,9 +127,9 @@ public class MetaDataHumanCentric extends AppCompatActivity {
                             String subLocation = subLocationView.getText().toString();
                             if (subLocation.equals("Other")) {
                                 subLocationOtherLayout.setVisibility(View.VISIBLE);
-                                subLocationString=subLocationOther.getText().toString();
-                            }
-                            else{
+                                subLocationString = subLocationOther.getText().toString();
+                            } else{
+                                subLocationOtherLayout.setVisibility(View.GONE);
                             }
                         }
                     });
@@ -153,7 +147,8 @@ public class MetaDataHumanCentric extends AppCompatActivity {
                             String subLocation = subLocationView.getText().toString();
                             if (subLocation.equals("Other")) {
                                 subLocationOtherLayout.setVisibility(View.VISIBLE);
-                                subLocationString=subLocationOther.getText().toString();
+                            }else{
+                                subLocationOtherLayout.setVisibility(View.GONE);
                             }
                         }
                     });
@@ -162,10 +157,11 @@ public class MetaDataHumanCentric extends AppCompatActivity {
 
             }
         });
+
         ArrayAdapter lightingAdapter =
                 new ArrayAdapter<>(
                         this,
-                        dropdown_menu_popup_item,
+                        R.layout.dropdown_menu_popup_item,
                         lighting);
 
         AutoCompleteTextView editTextFilledExposedDropdownLighting =
@@ -175,69 +171,21 @@ public class MetaDataHumanCentric extends AppCompatActivity {
         lightingView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String lighting=lightingView.getText().toString();
-                if(lighting.equals("Other")){
+                String lighting = lightingView.getText().toString();
+                if (lighting.equals("Other")) {
                     lightingOtherLayout.setVisibility(View.VISIBLE);
-                    lightingString=lightingOther.getText().toString();
+                    lightingString = lightingOther.getText().toString();
+                }
+                else{
+                    lightingOtherLayout.setVisibility(View.GONE);
                 }
             }
         });
 
-        ArrayAdapter humanPresentAdapter =
-                new ArrayAdapter<>(
-                        this,
-                        dropdown_menu_popup_item,
-                        humanPresent);
-
-        AutoCompleteTextView editTextFilledExposedDropdownHumanPresent =
-                humanPresentView.findViewById(R.id.humanPresent);
-        editTextFilledExposedDropdownHumanPresent.setAdapter(humanPresentAdapter);
-
-        ArrayAdapter typeAdapter =
-                new ArrayAdapter<>(
-                        this,
-                        dropdown_menu_popup_item,
-                        type);
-
-        AutoCompleteTextView editTextFilledExposedDropdownType =
-                typeView.findViewById(R.id.type);
-        editTextFilledExposedDropdownType.setAdapter(typeAdapter);
-
-        ArrayAdapter selfieAdapter =
-                new ArrayAdapter<>(
-                        this,
-                        dropdown_menu_popup_item,
-                        selfie);
-
-
-        AutoCompleteTextView editTextFilledExposedDropdownSelfie =
-                selfieView.findViewById(R.id.selfie);
-        editTextFilledExposedDropdownSelfie.setAdapter(selfieAdapter);
-
-        ArrayAdapter aboveEighteenAdapter =
-                new ArrayAdapter<>(
-                        this,
-                        dropdown_menu_popup_item,
-                        aboveEighteen);
-
-        AutoCompleteTextView editTextFilledExposedDropdownAboveEighteen =
-                aboveEighteenView.findViewById(R.id.above_eighteen);
-        editTextFilledExposedDropdownAboveEighteen.setAdapter(aboveEighteenAdapter);
-
-        ArrayAdapter consentAdapter =
-                new ArrayAdapter<>(
-                        this,
-                        dropdown_menu_popup_item,
-                        Consent);
-
-        AutoCompleteTextView editTextFilledExposedDropdownConsent =
-                consentView.findViewById(R.id.consent);
-        editTextFilledExposedDropdownConsent.setAdapter(consentAdapter);
-
         ArrayAdapter timingAdapter =
                 new ArrayAdapter<>(
                         this,
-                        dropdown_menu_popup_item,
+                        R.layout.dropdown_menu_popup_item,
                         timing);
 
         AutoCompleteTextView editTextFilledExposedDropdownTiming =
@@ -254,12 +202,6 @@ public class MetaDataHumanCentric extends AppCompatActivity {
                     subLocationString = subLocationView.getText().toString();
                     lightingString = lightingView.getText().toString();
                     locationString = locationView.getText().toString();
-                    humanPresentString = humanPresentView.getText().toString();
-                    typeString = typeView.getText().toString();
-                    aboveEighteenString = aboveEighteenView.getText().toString();
-                    propsString = props.getText().toString();
-                    selfieString = selfieView.getText().toString();
-                    consentString = consentView.getText().toString();
                     String myDeviceModel = android.os.Build.MODEL;
                     String screenSize = getScreenSize();
                     sharedPrefsManager.saveStringValue("categoryString", categoryString);
@@ -272,14 +214,82 @@ public class MetaDataHumanCentric extends AppCompatActivity {
                     sharedPrefsManager.saveStringValue("screenSize", screenSize);
                     sharedPrefsManager.saveStringValue("dslr", "No");
                     sharedPrefsManager.saveStringValue("category", categoryString);
-                    sharedPrefsManager.saveStringValue("isHumanPresent", humanPresentString);
-                    sharedPrefsManager.saveStringValue("selfie", selfieString);
-                    sharedPrefsManager.saveStringValue("type", typeString);
-                    sharedPrefsManager.saveStringValue("children", aboveEighteenString);
-                    sharedPrefsManager.saveStringValue("props", propsString);
-                    sharedPrefsManager.saveStringValue("consent", consentString);
-                    startActivity(new Intent(MetaDataHumanCentric.this, CameraUploadActivity.class));
+                    sharedPrefsManager.saveStringValue("isHumanPresent", "Null");
+                    sharedPrefsManager.saveStringValue("selfie", "Null");
+                    sharedPrefsManager.saveStringValue("type", "Null");
+                    sharedPrefsManager.saveStringValue("children", "Null");
+                    sharedPrefsManager.saveStringValue("props", "Null");
+                    sharedPrefsManager.saveStringValue("consent", "Null");
+                    sharedPrefsManager.saveBoolValue("isFromHumanMetaData",false);
+                    startActivity(new Intent(MetaDataNonHumanCentricActivity.this, UserUploadMenuActivity.class));
+                    finish();
                 }
+            }
+        });
+    }
+
+    public void  logoutDialogue() {
+
+        MaterialDialog mDialog = new MaterialDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Do you want to logout?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                        Toast.makeText(MetaDataNonHumanCentricActivity.this, "Logging out", Toast.LENGTH_SHORT).show();
+                        sharedPrefsManager.saveStringValue("userEmail", null);
+                        sharedPrefsManager.saveBoolValue("isLoggedIn", false);
+                        startActivity(new Intent(MetaDataNonHumanCentricActivity.this, UserLoginActivity.class));
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", R.drawable.ic_baseline_cancel_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                             dialogInterface.dismiss();
+                    }
+                })
+                .build();
+
+        // Show Dialog
+        mDialog.show();
+    }
+
+    private void toolbarClick() {
+        ImageView feedback,logout;
+        feedback=findViewById(R.id.toolbar_feedback);
+        logout=findViewById(R.id.toolbar_logout);
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MetaDataNonHumanCentricActivity.this, UserFeedBackActivity.class));
+                finish();
+
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutDialogue();
+
+            }
+        });
+
+        feedback.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Feedback", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        logout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show();
+                return false;
             }
         });
     }
@@ -290,45 +300,40 @@ public class MetaDataHumanCentric extends AppCompatActivity {
         subLocationString = subLocationView.getText().toString();
         lightingString = lightingView.getText().toString();
         locationString = locationView.getText().toString();
-        humanPresentString = humanPresentView.getText().toString();
-        typeString = typeView.getText().toString();
-        aboveEighteenString = aboveEighteenView.getText().toString();
-        propsString = props.getText().toString();
-        selfieString = selfieView.getText().toString();
-        consentString = consentView.getText().toString();
         if (categoryString.isEmpty()) {
             dataMajorCategory.setError("Invalid Input");
             return false;
-        } else if (locationString.isEmpty()) {
+        } else {
+            dataMajorCategory.setError(null);
+        }
+        if (locationString.isEmpty()) {
             locationView.setError("Invalid Input");
             return false;
-
-        } else if (subLocationString.isEmpty()) {
+        } else {
+            locationView.setError(null);
+        }
+        if (subLocationString.isEmpty()) {
             subLocationView.setError("Invalid Input");
             return false;
-        } else if (timingString.isEmpty()) {
+        } else {
+            subLocationView.setError(null);
+        }
+        if (timingString.isEmpty()) {
             timingView.setError("Invalid Input");
             return false;
-        } else if (lightingString.isEmpty()) {
+        } else {
+            timingView.setError(null);
+        }
+        if (lightingString.isEmpty()) {
             lightingView.setError("Invalid Input");
             return false;
-        } else if (humanPresentString.isEmpty()) {
-            humanPresentView.setError("Invalid Input");
-            return false;
-        } else if (selfieString.isEmpty()) {
-            selfieView.setError("Invalid Input");
-            return false;
-        } else if (typeString.isEmpty()) {
-            typeView.setError("Invalid Input");
-            return false;
-        } else if (aboveEighteenString.isEmpty()) {
-            aboveEighteenView.setError("Invalid Input");
-            return false;
-        } else if (consentString.isEmpty()) {
-            consentView.setError("Invalid Input");
-            return false;
         } else {
+            lightingView.setError(null);
+        }
+        if (!categoryString.isEmpty() && !subLocationString.isEmpty() && !locationString.isEmpty() && !timingString.isEmpty() && !lightingString.isEmpty()) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -337,28 +342,40 @@ public class MetaDataHumanCentric extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MetaDataHumanCentric.this, HumanCentricAgreement.class));
+                startActivity(new Intent(MetaDataNonHumanCentricActivity.this, UserCategoryActivity.class));
+                finish();
             }
         });
     }
 
     private void init() {
+        chipCategory=findViewById(R.id.chip_1);
+        chipSubcategory=findViewById(R.id.chip_2);
         dataMajorCategory = findViewById(R.id.data_major_category);
         timingView = findViewById(R.id.timing);
         subLocationView = findViewById(R.id.sub_location);
         locationView = findViewById(R.id.location_type);
         lightingView = findViewById(R.id.lighting);
         addMetaData = findViewById(R.id.addMetaData);
-        humanPresentView = findViewById(R.id.humanPresent);
-        selfieView = findViewById(R.id.selfie);
-        typeView = findViewById(R.id.type);
-        lightingOther = findViewById(R.id.lighting_other);
         subLocationOther = findViewById(R.id.sub_location_other);
-        aboveEighteenView = findViewById(R.id.above_eighteen);
-        consentView = findViewById(R.id.consent);
-        props = findViewById(R.id.props);
-        subLocationOtherLayout=findViewById(R.id.sub_location_other_layout);
-        lightingOtherLayout=findViewById(R.id.lighting_other_layout);
+        lightingOther = findViewById(R.id.lighting_other);
+        subLocationOtherLayout = findViewById(R.id.sub_location_other_layout);
+        lightingOtherLayout = findViewById(R.id.lighting_other_layout);
         sharedPrefsManager = new SharedPrefsManager(this);
+        catView=findViewById(R.id.cat);
+        subCatView=findViewById(R.id.subCat);
+        catName=sharedPrefsManager.getStringValue("categoryName","");
+        subCatName=sharedPrefsManager.getStringValue("subCategoryName","");
+        chipCategory.setText("Category: "+catName);
+        chipSubcategory.setText("Subcategory: "+subCatName);
+        catView.setText(catName);
+        subCatView.setText(subCatName);
     }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(MetaDataNonHumanCentricActivity.this, UserCategoryActivity.class));
+        finish();
+    }
+
 }

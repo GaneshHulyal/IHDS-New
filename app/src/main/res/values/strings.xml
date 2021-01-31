@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AI Data Lab</string>
+    <string name="app_name">KLE-SAMSUNG Data Capture Framework</string>
     <string name="toolbar">Toolbar</string>
     <string name="reg_heding">Enter Your Details</string>
     <string name="option_1">People</string>

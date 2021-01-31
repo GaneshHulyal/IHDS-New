@@ -1,17 +1,23 @@
 package in.ganeshhulyal.aidatalab.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,12 +33,16 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import in.ganeshhulyal.aidatalab.R;
+import in.ganeshhulyal.aidatalab.models.ResponseModel;
 import in.ganeshhulyal.aidatalab.others.MyClient;
 import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,18 +56,21 @@ public class UserRegistration extends AppCompatActivity {
     private String userNameString, userEmailString, userConfirmPasswordString, userUSNString, userPasswordString, userMobileString;
     private Button registerButton, sendOTP;
     private DatabaseReference mDatabase;
-    String verificationCodeBySystem;
+    private String verificationCodeBySystem;
     protected SharedPrefsManager SharedPrefs;
     private SharedPrefsManager sharedPrefsManager;
     private FirebaseAuth mAuth;
-    LottieAnimationView progressBar;
-    String number;
+    private LottieAnimationView progressBar;
+    private String number;
+    private boolean isEmailExist, isMobileNumberExist;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_registration);
-        sharedPrefsManager=new SharedPrefsManager(this);
+        sharedPrefsManager = new SharedPrefsManager(this);
+        context=this;
         init();
         initToolbar();
         backButton();
@@ -69,13 +82,12 @@ public class UserRegistration extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String otp=userOTP.getText().toString();
+                String otp = userOTP.getText().toString();
                 if (otp.isEmpty() || otp.length() < 6) {
                     userOTPLayout.setError("Wrong OTP...");
                     userOTPLayout.requestFocus();
                     return;
-                }
-                else{
+                } else {
                     verifyCode(otp);
                 }
             }
@@ -95,15 +107,38 @@ public class UserRegistration extends AppCompatActivity {
                     if (number.length() < 10 || number.length() > 10) {
                         Toast.makeText(UserRegistration.this, "Invalid Number!", Toast.LENGTH_SHORT).show();
                         userMobileNumberLauout.setError("Invalid Mobile Number");
+                    } else if (!inputValidation()) {
+
+
                     } else {
                         progressBar.setVisibility(View.VISIBLE);
                         phoneAuth(number);
                     }
                 }
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(this, "OTP Already Sent!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void toolbarClick() {
+        ImageView feedback,logout;
+        feedback=findViewById(R.id.toolbar_feedback);
+        logout=findViewById(R.id.toolbar_logout);
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(UserRegistration.this, "Please Login...", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(UserRegistration.this, "Please Login...", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void phoneAuth(String number) {
@@ -167,11 +202,17 @@ public class UserRegistration extends AppCompatActivity {
 
                         if (task.isSuccessful()) {
 
-                            sharedPrefsManager.saveStringValue("mobileNumber",number);
-                            Toast.makeText(UserRegistration.this, "Your account has been created successfully!", Toast.LENGTH_SHORT).show();
+                            sharedPrefsManager.saveStringValue("mobileNumber", number);
+                            Log.d("Msg", "User Added");
+                            sharedPrefsManager.saveBoolValue("isFromRegister",true);
+                            Toast.makeText(UserRegistration.this, "OTP Verified Successfully", Toast.LENGTH_SHORT).show();
+                            userOTP.setText("OTP Verified");
+                            userOTP.setTextColor(getResources().getColor(R.color.green));
+                            userOTPLayout.setEndIconDrawable(R.drawable.ic_baseline_check_circle_24);
+                            mainMethod();
+                            //Toast.makeText(UserRegistration.this, "Your account has been created successfully!", Toast.LENGTH_SHORT).show();
 
                             //Perform Your required action here to either let the user sign In or do something required
-                            mainMethod();
 
                         } else {
                             Toast.makeText(UserRegistration.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -188,49 +229,100 @@ public class UserRegistration extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(UserRegistration.this, LoginActivity.class));
+                startActivity(new Intent(UserRegistration.this, DownloadAgreementActivity.class));
                 finish();
             }
         });
     }
 
     private void mainMethod() {
-                if (inputValidation()) {
-                    Call<ResponseBody> call = MyClient.getInstance().getMyApi().insertUser(userNameString, userUSNString, userMobileString, userEmailString, userPasswordString);
-                    call.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            Toast.makeText(UserRegistration.this, "User Created Successfully!", Toast.LENGTH_SHORT).show();
-                            SharedPrefs.saveStringValue("userEmail", userEmailString);
-                            startActivity(new Intent(UserRegistration.this, LoginActivity.class));
-                            finish();
-                        }
+        if (inputValidation()) {
+            Log.d("Msg", "Main Method Called");
+            Call<ResponseModel> call = MyClient.getInstance().getMyApi().insertUser(userNameString, userUSNString, userMobileString, userEmailString, userPasswordString);
+            call.enqueue(new Callback<ResponseModel>() {
+                @Override
+                public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                    Log.d("Msg", response.toString());
+                    if (response.isSuccessful()) {
+                        Log.d("Msg", "Response is Successful");
+                        if (response.body().isAuthenticated()) {
+                            Log.d("Msg", "Already Exist");
+                            Toast.makeText(UserRegistration.this, "User account already exist!", Toast.LENGTH_SHORT).show();
+                            //startActivity(new Intent(UserRegistration.this, LoginActivity.class))
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(UserRegistration.this, "User Creation Failed!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            SharedPrefs.saveStringValue("userEmail", userEmailString);
+                            new SharedPrefsManager(context).saveBoolValue("isAllAgreementUploaded", false);
+                            Runnable r = new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    // if you are redirecting from a fragment then use getActivity() as the context.
+                                    startActivity(new Intent(UserRegistration.this, UploadAgreementActivity.class));
+                                    finish();
+
+                                }
+                            };
+                            Handler h = new Handler();
+                            h.postDelayed(r, 2000);
                         }
-                    });
+                    } else {
+                        Log.d("Msg", "Failed");
+                        Toast.makeText(UserRegistration.this, "Failed!", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
+                @Override
+                public void onFailure(Call<ResponseModel> call, Throwable t) {
+                    Toast.makeText(UserRegistration.this, "User Creation Failed!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    public boolean emailValidator(String email)
+    {
+        Pattern pattern;
+        Matcher matcher;
+        final String EMAIL_PATTERN = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        pattern = Pattern.compile(EMAIL_PATTERN);
+        matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     private boolean inputValidation() {
         userNameString = userName.getText().toString();
-        userEmailString = userEmail.getText().toString();
+        userEmailString = userEmail.getText().toString().trim();
         userConfirmPasswordString = userConfirmPassword.getText().toString();
         userUSNString = userUSN.getText().toString();
         userPasswordString = userPassword.getText().toString();
         userMobileString = userMobileNumber.getText().toString();
+        String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
         if (userNameString.length() < 3 || userNameString.isEmpty()) {
             userNameLayout.setError("Invalid Input");
             return false;
-        } else if (userMobileString.length() < 10 || userMobileString.isEmpty()) {
+        } else {
+            userNameLayout.setError(null);
+        }
+        if (isEmailExist || !emailValidator(userEmailString)) {
+            userEmailLayout.setError("Invalid Email");
+            return false;
+        } else {
+            userEmailLayout.setError(null);
+        }
+        if (userMobileString.length() < 10 || userMobileString.isEmpty() || isMobileNumberExist) {
             userMobileNumberLauout.setError("Invalid Mobile");
             return false;
-        } else if (!userPasswordString.equals(userConfirmPasswordString) || userPasswordString.isEmpty()) {
+        } else {
+            userMobileNumberLauout.setError(null);
+        }
+        if (!userPasswordString.equals(userConfirmPasswordString) || userPasswordString.isEmpty()) {
             userPasswordLayout.setError("Password not matched");
             return false;
-        } else if (userPasswordString.length() < 3 || userPasswordString.isEmpty()) {
+        } else {
+            userPasswordLayout.setError(null);
+        }
+        if (userPasswordString.length() < 3 || userPasswordString.isEmpty()) {
             userPasswordLayout.setError("Password should be Minimum 3 Letters");
             return false;
         } else {
@@ -238,22 +330,41 @@ public class UserRegistration extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(UserRegistration.this, UserLoginActivity.class));
+        finish();
+
+    }
+
+
     private void initToolbar() {
         toolbarName.setText("User Registration");
     }
 
     private void init() {
+        ScrollView view = (ScrollView)findViewById(R.id.scrollView);
+        view.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        view.setFocusable(true);
+        view.setFocusableInTouchMode(true);
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.requestFocusFromTouch();
+                return false;
+            }
+        });
         toolbarName = findViewById(R.id.toolbar_name);
         userName = findViewById(R.id.fullName);
         userEmail = findViewById(R.id.userEmail);
         userUSN = findViewById(R.id.userUSN);
-        userOTP=findViewById(R.id.userOTP);
-        userOTPLayout=findViewById(R.id.userOtpLayout);
+        userOTP = findViewById(R.id.userOTP);
+        userOTPLayout = findViewById(R.id.userOtpLayout);
         userPassword = findViewById(R.id.userPassword);
         userConfirmPassword = findViewById(R.id.userConfirmPassword);
         userNameLayout = findViewById(R.id.fullNameLayout);
         userEmailLayout = findViewById(R.id.userEmailLayout);
-        userMobileNumberLauout=findViewById(R.id.userMobileNumberLayout);
+        userMobileNumberLauout = findViewById(R.id.userMobileNumberLayout);
         userUSNLayout = findViewById(R.id.userUSNLayout);
         userPasswordLayout = findViewById(R.id.userPasswordLayout);
         userConfirmationLayout = findViewById(R.id.userConfirmPasswordLayout);
@@ -261,7 +372,7 @@ public class UserRegistration extends AppCompatActivity {
         sendOTP = findViewById(R.id.requestOTP);
         sendOTPLayout = findViewById(R.id.userOtpLayout);
         userMobileNumber = findViewById(R.id.userMobileNumber);
-        progressBar=findViewById(R.id.progress_bar);
+        progressBar = findViewById(R.id.progress_bar);
 
         //Initialize Database Reference
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -272,5 +383,162 @@ public class UserRegistration extends AppCompatActivity {
         //Initialize Firebase Instance
         mAuth = FirebaseAuth.getInstance();
 
+        userEmail.addTextChangedListener(
+                new TextWatcher() {
+                    @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
+                    @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+                    private Timer timer=new Timer();
+                    private final long DELAY = 1000; // milliseconds
+
+                    @Override
+                    public void afterTextChanged(final Editable s) {
+                        timer.cancel();
+                        timer = new Timer();
+                        timer.schedule(
+                                new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        userEmailString = userEmail.getText().toString().trim();
+
+
+                                        Call<ResponseModel> call = MyClient.getInstance().getMyApi().checkEmail(userEmailString);
+                                        call.enqueue(new Callback<ResponseModel>() {
+                                            @Override
+                                            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                                                Log.d("Msg", response.toString());
+                                                if (response.isSuccessful()) {
+                                                    Log.d("Msg", "Response is Successful");
+                                                    if (response.body().isEmailExist()) {
+                                                        Log.d("Msg", "Already Exist");
+                                                        userEmailLayout.setError("Email Already Exist");
+                                                        userMobileNumber.setEnabled(false);
+                                                        userMobileNumber.setFocusable(false);
+                                                        userPassword.setEnabled(false);
+                                                        userPassword.setFocusable(false);
+                                                        userConfirmPassword.setEnabled(false);
+                                                        userConfirmPassword.setFocusable(false);
+                                                        userOTP.setEnabled(false);
+                                                        userOTP.setFocusable(false);
+                                                        sendOTP.setEnabled(false);
+                                                        registerButton.setEnabled(false);
+                                                        isEmailExist = true;
+                                                    } else {
+                                                        userEmailLayout.setError(null);
+                                                        userMobileNumber.setEnabled(true);
+                                                        userMobileNumber.setFocusableInTouchMode(true);
+                                                        userPassword.setEnabled(true);
+                                                        userPassword.setFocusableInTouchMode(true);
+                                                        userConfirmPassword.setEnabled(true);
+                                                        userConfirmPassword.setFocusableInTouchMode(true);
+                                                        userOTP.setEnabled(true);
+                                                        userOTP.setFocusableInTouchMode(true);
+                                                        sendOTP.setEnabled(true);
+                                                        registerButton.setEnabled(true);
+                                                        isEmailExist = false;
+                                                    }
+                                                } else {
+                                                    Log.d("Msg", "Failed");
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                                            }
+                                        });
+
+
+                                    }
+                                },
+                                DELAY
+                        );
+                    }
+                }
+        );
+
+        userMobileNumber.addTextChangedListener(
+                new TextWatcher() {
+                    @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
+                    @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+                    private Timer timer=new Timer();
+                    private final long DELAY = 1000; // milliseconds
+
+                    @Override
+                    public void afterTextChanged(final Editable s) {
+                        timer.cancel();
+                        timer = new Timer();
+                        timer.schedule(
+                                new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        userMobileString = userMobileNumber.getText().toString();
+
+                                        Call<ResponseModel> call = MyClient.getInstance().getMyApi().checkMobileNumber(userMobileString);
+                                        call.enqueue(new Callback<ResponseModel>() {
+                                            @Override
+                                            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                                                Log.d("Msg", response.toString());
+                                                if (response.isSuccessful()) {
+                                                    Log.d("Msg", "Response is Successful");
+                                                    if (response.body().isMobileExist()) {
+                                                        Log.d("Msg", "Already Exist");
+                                                        userMobileNumberLauout.setError("Mobile Number Already Exist");
+                                                        userPassword.setEnabled(false);
+                                                        userPassword.setFocusable(false);
+                                                        userConfirmPassword.setEnabled(false);
+                                                        userConfirmPassword.setFocusable(false);
+                                                        userOTP.setEnabled(false);
+                                                        userOTP.setFocusable(false);
+                                                        sendOTP.setEnabled(false);
+                                                        registerButton.setEnabled(false);
+                                                        isMobileNumberExist = true;
+                                                    } else {
+                                                        userMobileNumberLauout.setError(null);
+                                                        userPassword.setEnabled(true);
+                                                        userPassword.setFocusableInTouchMode(true);
+                                                        userConfirmPassword.setEnabled(true);
+                                                        userConfirmPassword.setFocusableInTouchMode(true);
+                                                        userOTP.setEnabled(true);
+                                                        userOTP.setFocusableInTouchMode(true);
+                                                        sendOTP.setEnabled(true);
+                                                        registerButton.setEnabled(true);
+                                                        isMobileNumberExist = false;
+                                                    }
+                                                } else {
+                                                    Log.d("Msg", "Failed");
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                                            }
+                                        });
+
+
+                                    }
+                                },
+                                DELAY
+                        );
+                    }
+                }
+        );
+
+//        userMobileNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//
+//            }
+//        });
+
+        userPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+            }
+
+        });
+
     }
+
 }

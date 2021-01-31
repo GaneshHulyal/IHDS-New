@@ -1,29 +1,16 @@
 package in.ganeshhulyal.aidatalab.activities;
 
-import android.os.Bundle;
+/* User has all the upload options in this activity- This activity comes after MetaData Screen */
 
-import in.ganeshhulyal.aidatalab.R;
-import in.ganeshhulyal.aidatalab.others.Config;
-import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,20 +18,23 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.shreyaspatil.MaterialDialog.MaterialDialog;
+import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-public class CameraUploadActivity extends AppCompatActivity {
+import in.ganeshhulyal.aidatalab.R;
+import in.ganeshhulyal.aidatalab.others.Config;
+import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
+
+public class UserUploadMenuActivity extends AppCompatActivity {
 
     // LogCat tag
-    private static final String TAG = CameraUploadActivity.class.getSimpleName();
+    private static final String TAG = UserUploadMenuActivity.class.getSimpleName();
 
 
     // Camera activity request codes
@@ -54,9 +44,8 @@ public class CameraUploadActivity extends AppCompatActivity {
     public String categoryName;
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
-
+    private Context context;
     private Uri fileUri; // file url to store image/video
-
     private MaterialCardView btnCapturePicture, btnRecordVideo, btnUploadImage, btnUploadVideo;
 
     @Override
@@ -65,27 +54,32 @@ public class CameraUploadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_camera_upload);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        // Changing action bar background color
-        // These two lines are not needed
+        context=this;
         backButton();
-        sharedPrefsManager=new SharedPrefsManager(this);
-        categoryName=sharedPrefsManager.getStringValue("categoryString","Null");
+        sharedPrefsManager = new SharedPrefsManager(this);
+        categoryName = sharedPrefsManager.getStringValue("categoryString", "Null");
         //getActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(getResources().getString(R.color.action_bar))));
         btnCapturePicture = findViewById(R.id.btnCapturePicture);
         btnRecordVideo = findViewById(R.id.btnRecordVideo);
-        btnUploadImage=findViewById(R.id.btnUploadImage);
-        btnUploadVideo=findViewById(R.id.btnUploadVideo);
+        btnUploadImage = findViewById(R.id.btnUploadImage);
+        btnUploadVideo = findViewById(R.id.btnUploadVideo);
+        toolbarClick();
+        floatingActionButton();
 
         /**
          * Capture image button click event
          */
 
+        //Upload Button click event
         btnUploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(CameraUploadActivity.this,MultipleImageUpload.class));
+                startActivity(new Intent(UserUploadMenuActivity.this, UploadMultipleImage.class));
+                finish();
             }
         });
+
+        //capture button click event
         btnCapturePicture.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -95,9 +89,19 @@ public class CameraUploadActivity extends AppCompatActivity {
             }
         });
 
+        //upload button click event
+        btnUploadVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UserUploadMenuActivity.this, UploadMultipleVideo.class));
+                finish();
+            }
+        });
         /**
          * Record video button click event
          */
+
+        //upload record button click event
         btnRecordVideo.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -108,40 +112,103 @@ public class CameraUploadActivity extends AppCompatActivity {
         });
 
         // Checking camera availability
-        if (!isDeviceSupportCamera()) {
-            Toast.makeText(getApplicationContext(),
-                    "Sorry! Your device doesn't support camera",
-                    Toast.LENGTH_LONG).show();
-            // will close the app if the device does't have camera
-            finish();
-        }
+//        if (!isDeviceSupportCamera()) {
+//            Toast.makeText(getApplicationContext(),
+//                    "Sorry! Your device doesn't support camera",
+//                    Toast.LENGTH_LONG).show();
+//            // will close the app if the device does't have camera
+//            finish();
+//        }
 
         initToolbar();
     }
 
     private void initToolbar() {
         TextView toolbarName;
-        toolbarName=findViewById(R.id.toolbar_name);
+        toolbarName = findViewById(R.id.toolbar_name);
         toolbarName.setText("Upload");
     }
 
     /**
      * Checking device has camera hardware or not
-     * */
-    private boolean isDeviceSupportCamera() {
-        if (getApplicationContext().getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_CAMERA)) {
-            // this device has a camera
-            return true;
-        } else {
-            // no camera on this device
-            return false;
-        }
+     */
+    public void  logoutDialogue() {
+
+        MaterialDialog mDialog = new MaterialDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Do you want to logout?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        Toast.makeText(UserUploadMenuActivity.this, "Logging out", Toast.LENGTH_SHORT).show();
+                        sharedPrefsManager.saveStringValue("userEmail", null);
+                        sharedPrefsManager.saveBoolValue("isLoggedIn", false);
+                        startActivity(new Intent(UserUploadMenuActivity.this, UserLoginActivity.class));
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", R.drawable.ic_baseline_cancel_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .build();
+
+        // Show Dialog
+        mDialog.show();
     }
+
+    //toolbar click even
+    private void toolbarClick() {
+        ImageView feedback,logout;
+        feedback=findViewById(R.id.toolbar_feedback);
+        logout=findViewById(R.id.toolbar_logout);
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UserUploadMenuActivity.this, UserFeedBackActivity.class));
+                finish();
+
+            }
+        });
+
+        //logout click event
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutDialogue();
+
+            }
+        });
+
+        //toolbar feedback button
+        feedback.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Feedback", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+
+        //toolbar logout button
+        logout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+    }
+
 
     /**
      * Launching camera app to capture image
      */
+
+    //launch capture image intent
     private void captureImage() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -156,6 +223,20 @@ public class CameraUploadActivity extends AppCompatActivity {
     /**
      * Launching camera app to record video
      */
+
+    //floating action button for download activity
+    private void floatingActionButton(){
+        FloatingActionButton fab=findViewById(R.id.floating_action_button);
+        SharedPrefsManager sharedPrefsManager=new SharedPrefsManager(this);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPrefsManager.saveBoolValue("isFromLogin",false);
+                startActivity(new Intent(UserUploadMenuActivity.this,DownloadAgreementActivity.class));
+            }
+        });
+    }
+
     private void recordVideo() {
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
@@ -193,10 +274,9 @@ public class CameraUploadActivity extends AppCompatActivity {
     }
 
 
-
     /**
      * Receiving activity result method will be called after closing the camera
-     * */
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // if the result is capturing Image
@@ -245,11 +325,14 @@ public class CameraUploadActivity extends AppCompatActivity {
         }
     }
 
-    private void launchUploadActivity(boolean isImage){
-        Intent i = new Intent(CameraUploadActivity.this, UploadActivity.class);
+
+    //Launching Upload activity
+    private void launchUploadActivity(boolean isImage) {
+        Intent i = new Intent(UserUploadMenuActivity.this, UploadActivity.class);
         i.putExtra("filePath", fileUri.getPath());
         i.putExtra("isImage", isImage);
         startActivity(i);
+        finish();
     }
 
     /**
@@ -288,7 +371,7 @@ public class CameraUploadActivity extends AppCompatActivity {
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                    + "IMG_"+ timeStamp + ".jpg");
+                    + "IMG_" + timeStamp + ".jpg");
         } else if (type == MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
                     + "VID_" + timeStamp + ".mp4");
@@ -299,15 +382,39 @@ public class CameraUploadActivity extends AppCompatActivity {
         return mediaFile;
     }
 
+
+    //toolbar back button
     private void backButton() {
         ImageView backButton = findViewById(R.id.toolbar_image);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                //Checking whether the Activity is from HumanMetaData Activity or Not
+                if (sharedPrefsManager.getBoolValue("isFromHumanMetaData", false)) {
+                    startActivity(new Intent(UserUploadMenuActivity.this, MetaDataHumanCentricActivity.class));
+                    finish();
+                } else {
+                    startActivity(new Intent(UserUploadMenuActivity.this, MetaDataNonHumanCentricActivity.class));
+                    finish();
+                }
             }
         });
 
 
     }
+
+
+    //on BackPressed event
+    @Override
+    public void onBackPressed() {
+
+        if (sharedPrefsManager.getBoolValue("isFromHumanMetaData", false)) {
+            startActivity(new Intent(UserUploadMenuActivity.this, MetaDataHumanCentricActivity.class));
+            finish();
+        } else {
+            startActivity(new Intent(UserUploadMenuActivity.this, MetaDataNonHumanCentricActivity.class));
+            finish();
+        }
+    }
+
 }

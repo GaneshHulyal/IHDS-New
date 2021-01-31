@@ -1,69 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
-    android:orientation="vertical"
-    android:weightSum="100"
-    tools:context=".activities.AgreementActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activities.UserUploadMenuActivity">
 
-    <include
-        android:id="@+id/toolbar_agreement"
-        layout="@layout/toolbar_item" />
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-    <TextView
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorBackground"
+            android:orientation="vertical"
+            android:weightSum="100"
+            tools:context=".activities.UploadAgreementActivity">
+
+            <include
+                android:id="@+id/toolbar_agreement"
+                layout="@layout/toolbar_item" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="5"
+                android:fontFamily="@font/poppins_semibold"
+                android:padding="@dimen/padding_14dp"
+                android:text="Select Category"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/heading_size" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Category"
+                android:padding="@dimen/padding_8dp"
+                app:boxCornerRadiusBottomStart="@dimen/corner_radius_medium"
+                app:boxCornerRadiusTopEnd="@dimen/corner_radius_medium"
+                app:boxStrokeColor="@color/colorPrimary">
+
+                <AutoCompleteTextView
+                    android:id="@+id/category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Sub Category"
+                android:padding="@dimen/padding_8dp"
+                app:boxCornerRadiusBottomStart="@dimen/corner_radius_medium"
+                app:boxCornerRadiusTopEnd="@dimen/corner_radius_medium"
+                app:boxStrokeColor="@color/colorPrimary">
+
+                <AutoCompleteTextView
+                    android:id="@+id/subCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/addClass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="Next" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/poppins_semibold"
-        android:padding="@dimen/padding_14dp"
-        android:text="Add Category"
-        android:layout_weight="5"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/heading_size" />
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/footerView"
+        app:tint="@color/white"
+        android:contentDescription="Sample Description Goes Here"
+        android:src="@drawable/ic_baseline_cloud_download_24"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+    <LinearLayout
+        android:id="@+id/footerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Category"
-        android:padding="@dimen/padding_8dp"
-        app:boxCornerRadiusBottomStart="@dimen/corner_radius_medium"
-        app:boxCornerRadiusTopEnd="@dimen/corner_radius_medium"
-        app:boxStrokeColor="@color/colorPrimary">
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-        <AutoCompleteTextView
-            android:id="@+id/category"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        <include
+            android:id="@+id/register_toolbar"
+            layout="@layout/footer_layout" />
+    </LinearLayout>
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Sub Category"
-        android:padding="@dimen/padding_8dp"
-        app:boxCornerRadiusBottomStart="@dimen/corner_radius_medium"
-        app:boxCornerRadiusTopEnd="@dimen/corner_radius_medium"
-        app:boxStrokeColor="@color/colorPrimary">
-
-        <AutoCompleteTextView
-            android:id="@+id/subCategory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <Button
-        android:id="@+id/addClass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:fontFamily="@font/poppins_semibold"
-        android:text="Add" />
-
-</LinearLayout>
+</RelativeLayout>

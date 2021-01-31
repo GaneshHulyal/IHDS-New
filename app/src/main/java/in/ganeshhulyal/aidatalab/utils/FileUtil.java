@@ -9,13 +9,6 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
 import java.io.File;
-
-/**
- * @version 2009-07-03
- * @author Peli
- * @version 2013-12-11
- * @author paulburke (ipaulpro)
- */
 public class FileUtil {
     private FileUtil() {} //private constructor to enforce Singleton pattern
 

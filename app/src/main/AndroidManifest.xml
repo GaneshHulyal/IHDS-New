@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="in.ganeshhulyal.aidatalab">
 
+
+    <!-- user Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -12,32 +14,37 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:largeHeap="true"
-        android:hardwareAccelerated="false"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:hardwareAccelerated="false"
+        android:icon="@drawable/ic_launcher_icon"
         android:label="@string/app_name"
+        android:largeHeap="true"
+        android:noHistory="true"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AIDataLab"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.UploadHumanAgreement"></activity>
-        <activity android:name=".activities.UploadAgreement" />
-        <activity android:name=".activities.MultipleImageUpload" />
-        <activity android:name=".activities.CameraUploadActivity" />
-        <activity android:name=".activities.MetaDataNonHumanCentric" />
-        <activity android:name=".activities.MetaDataHumanCentric" />
-        <activity android:name=".activities.ClassName" />
+        <activity android:name=".activities.PrivacyPolicyActivity"></activity>
+        <activity android:name=".activities.DownloadAgreementActivity" />
+        <activity android:name=".activities.UserFeedBackActivity" />
+        <activity android:name=".activities.UploadMultipleVideo" />
+        <activity android:name=".activities.UploadHumanAgreement" />
+        <activity android:name=".activities.UploadMultipleHumanCentricAgreement" />
+        <activity android:name=".activities.UploadAgreementActivity" />
+        <activity android:name=".activities.UploadMultipleImage" />
+        <activity android:name=".activities.UserUploadMenuActivity" />
+        <activity android:name=".activities.MetaDataNonHumanCentricActivity" />
+        <activity android:name=".activities.MetaDataHumanCentricActivity" />
+        <activity android:name=".activities.UserCategoryActivity" />
         <activity android:name=".activities.UploadActivity" />
-        <activity android:name=".activities.HumanCentricAgreement" />
+        <activity android:name=".activities.UploadHumanCentricAgreementActivity" />
         <activity android:name=".activities.UserMenu" />
         <activity android:name=".activities.ImageUploadNonHumanCentric" />
-        <activity android:name=".activities.AgreementActivity" />
-        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.UserLoginActivity" />
         <activity android:name=".activities.UserRegistration" />
         <activity android:name=".activities.MainActivity" />
-        <activity android:name=".activities.SplashScreen">
+        <activity android:name=".activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

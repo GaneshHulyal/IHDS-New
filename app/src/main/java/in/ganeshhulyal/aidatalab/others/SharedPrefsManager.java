@@ -14,6 +14,14 @@ public class SharedPrefsManager {
         editor= SharedPref.edit();
     }
 
+    public boolean saveLongValue(String key,long value){
+        editor.putLong(key,value).apply();
+        return true;
+    }
+    public long getLongValue(String key,long defaultValue){
+        return SharedPref.getLong("key",defaultValue);
+    }
+
     public boolean saveStringValue(String key, String value){
         editor.putString(key,value).apply();
         return true;

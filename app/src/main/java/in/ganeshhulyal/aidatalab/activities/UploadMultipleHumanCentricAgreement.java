@@ -2,15 +2,19 @@ package in.ganeshhulyal.aidatalab.activities;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -25,30 +29,19 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import in.ganeshhulyal.aidatalab.R;
-import in.ganeshhulyal.aidatalab.adapters.MyAdapter;
 import in.ganeshhulyal.aidatalab.Retrofit.Interfaces.ApiService;
+import in.ganeshhulyal.aidatalab.adapters.MyAdapter;
 import in.ganeshhulyal.aidatalab.others.InternetConnection;
 import in.ganeshhulyal.aidatalab.others.PostData;
 import in.ganeshhulyal.aidatalab.others.SharedPrefsManager;
 import in.ganeshhulyal.aidatalab.utils.FileUtil;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
-import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -57,28 +50,31 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MultipleImageUpload extends AppCompatActivity {
-    private static final String TAG = MultipleImageUpload.class.getSimpleName();
+public class UploadMultipleHumanCentricAgreement extends AppCompatActivity {
+    private static final String TAG = UploadMultipleHumanCentricAgreement.class.getSimpleName();
 
     private ListView listView;
     private ProgressBar mProgressBar;
     private MaterialButton btnChoose, btnUpload;
-
     private ArrayList<Uri> arrayList;
-
     private final int REQUEST_CODE_PERMISSIONS = 1;
     private final int REQUEST_CODE_READ_STORAGE = 2;
-    SharedPrefsManager sharedPrefsManager;
+    private SharedPrefsManager sharedPrefsManager;
+    private boolean exit = false;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multiple_image_upload);
         sharedPrefsManager = new SharedPrefsManager(this);
-        if (android.os.Build.VERSION.SDK_INT > 9) {
+        context = this;
+        backButton();
+        if (Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
+        toolbarClick();
         listView = findViewById(R.id.listView);
         mProgressBar = findViewById(R.id.progressBar);
 
@@ -98,7 +94,8 @@ public class MultipleImageUpload extends AppCompatActivity {
         arrayList = new ArrayList<>();
     }
 
-    public void showDialogueDialog() {
+    public void  showDialogueDialog() {
+
         MaterialDialog mDialog = new MaterialDialog.Builder(this)
                 .setTitle("Upload Successful!")
                 .setMessage("Do you want to upload more?")
@@ -106,17 +103,14 @@ public class MultipleImageUpload extends AppCompatActivity {
                 .setPositiveButton("Yes?", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
-                        if (sharedPrefsManager.getStringValue("imageType", "Human Centric").equals("Human Centric")) {
-                            startActivity(new Intent(MultipleImageUpload.this, MetaDataHumanCentric.class));
-                        } else {
-                            startActivity(new Intent(MultipleImageUpload.this, MetaDataNonHumanCentric.class));
-                        }
+                        startActivity(new Intent(UploadMultipleHumanCentricAgreement.this, UserCategoryActivity.class));
                     }
                 })
                 .setNegativeButton("No", R.drawable.ic_baseline_cancel_24, new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
-                        startActivity(new Intent(MultipleImageUpload.this, ClassName.class));
+                        startActivity(new Intent(UploadMultipleHumanCentricAgreement.this, UserFeedBackActivity.class));
+                        finish();
                     }
                 })
                 .build();
@@ -131,17 +125,54 @@ public class MultipleImageUpload extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(intent, REQUEST_CODE_READ_STORAGE);
-        btnUpload.setVisibility(View.VISIBLE);
+    }
+
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
+        btnUpload.setVisibility(View.VISIBLE);
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_READ_STORAGE) {
                 if (resultData != null) {
                     if (resultData.getClipData() != null) {
                         int count = resultData.getClipData().getItemCount();
+                        boolean flag;
+                        if(count>1){
+                            flag=true;
+                        }else{
+                            flag=false;
+                        }
+                        if (flag) {
+                            btnUpload.setVisibility(View.VISIBLE);
+                            btnChoose.setText("Add More");
+                            //btnChoose.setVisibility(View.GONE);
+                        } else {
+                            Toast.makeText(this, "Select 2 or more Images", Toast.LENGTH_SHORT).show();
+                            btnUpload.setVisibility(View.VISIBLE);
+                            btnChoose.setVisibility(View.VISIBLE);
+                        }
                         int currentItem = 0;
                         while (currentItem < count) {
                             Uri imageUri = resultData.getClipData().getItemAt(currentItem).getUri();
@@ -151,7 +182,7 @@ public class MultipleImageUpload extends AppCompatActivity {
 
                             try {
                                 arrayList.add(imageUri);
-                                MyAdapter mAdapter = new MyAdapter(MultipleImageUpload.this, arrayList);
+                                MyAdapter mAdapter = new MyAdapter(UploadMultipleHumanCentricAgreement.this, arrayList);
                                 listView.setAdapter(mAdapter);
 
                             } catch (Exception e) {
@@ -165,7 +196,7 @@ public class MultipleImageUpload extends AppCompatActivity {
 
                         try {
                             arrayList.add(uri);
-                            MyAdapter mAdapter = new MyAdapter(MultipleImageUpload.this, arrayList);
+                            MyAdapter mAdapter = new MyAdapter(UploadMultipleHumanCentricAgreement.this, arrayList);
                             listView.setAdapter(mAdapter);
 
                         } catch (Exception e) {
@@ -178,7 +209,7 @@ public class MultipleImageUpload extends AppCompatActivity {
     }
 
     private void uploadImagesToServer() {
-        if (InternetConnection.checkConnection(MultipleImageUpload.this)) {
+        if (InternetConnection.checkConnection(UploadMultipleHumanCentricAgreement.this)) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(ApiService.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -210,31 +241,17 @@ public class MultipleImageUpload extends AppCompatActivity {
             SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(this);
             RequestBody Category = createPartFromString(sharedPrefsManager.getStringValue("categoryName", "Other"));
             RequestBody subCategory = createPartFromString(sharedPrefsManager.getStringValue("subCategoryName", "Other"));
-            RequestBody dataType = createPartFromString("Image");
-            RequestBody location = createPartFromString(sharedPrefsManager.getStringValue("location", "Null"));
-            RequestBody subLocation = createPartFromString(sharedPrefsManager.getStringValue("subLocation", "Null"));
-            RequestBody timing = createPartFromString(sharedPrefsManager.getStringValue("timing", "Null"));
-            RequestBody lighting = createPartFromString(sharedPrefsManager.getStringValue("lighting", "Null"));
-            RequestBody model = createPartFromString(sharedPrefsManager.getStringValue("model", "Null"));
-            RequestBody orientation = createPartFromString(sharedPrefsManager.getStringValue("orientation", "Null"));
-            RequestBody screenSize = createPartFromString(sharedPrefsManager.getStringValue("screenSize", "Null"));
-            RequestBody dslr = createPartFromString(sharedPrefsManager.getStringValue("dslr", "Null"));
-            RequestBody category = createPartFromString(sharedPrefsManager.getStringValue("category", "Null"));
-            RequestBody isHumanPresent = createPartFromString(sharedPrefsManager.getStringValue("isHumanPresnt", "Null"));
-            RequestBody selfie = createPartFromString(sharedPrefsManager.getStringValue("selfie", "Null"));
-            RequestBody children = createPartFromString(sharedPrefsManager.getStringValue("children", "Null"));
-            RequestBody consent = createPartFromString(sharedPrefsManager.getStringValue("consent", "Null"));
-            RequestBody props = createPartFromString(sharedPrefsManager.getStringValue("props", "Null"));
-            RequestBody imageType = createPartFromString(sharedPrefsManager.getStringValue("imageType", "Null"));
             RequestBody username = createPartFromString(Email);
 
-            Call<ResponseBody> call = service.uploadMultiple(imageType, description, size, Category, subCategory, username, dataType, model, screenSize, orientation, dslr, category, location, subLocation, timing, lighting, isHumanPresent, selfie, createPartFromString("Single"), children, props, consent, parts);
+            Call<ResponseBody> call = service.uploadMultipleAgreement(Category,subCategory,username,description,size,parts);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     hideProgress();
                     if (response.isSuccessful()) {
-                        showDialogueDialog();
+                        Toast.makeText(UploadMultipleHumanCentricAgreement.this, "Uploaded Successfully!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(UploadMultipleHumanCentricAgreement.this, MetaDataHumanCentricActivity.class));
+                        finish();
                     } else {
                         Snackbar.make(findViewById(android.R.id.content),
                                 "Something went wrong", Snackbar.LENGTH_LONG).show();
@@ -252,7 +269,7 @@ public class MultipleImageUpload extends AppCompatActivity {
 
         } else {
             hideProgress();
-            Toast.makeText(MultipleImageUpload.this,
+            Toast.makeText(UploadMultipleHumanCentricAgreement.this,
                     "Internet Not Available", Toast.LENGTH_SHORT).show();
         }
     }
@@ -289,6 +306,72 @@ public class MultipleImageUpload extends AppCompatActivity {
     /**
      * Runtime Permission
      */
+    public void  logoutDialogue() {
+
+        MaterialDialog mDialog = new MaterialDialog.Builder(this)
+                .setTitle("Logout")
+                .setMessage("Do you want to logout?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                        Toast.makeText(UploadMultipleHumanCentricAgreement.this, "Logging out", Toast.LENGTH_SHORT).show();
+                        sharedPrefsManager.saveStringValue("userEmail", null);
+                        sharedPrefsManager.saveBoolValue("isLoggedIn", false);
+                        startActivity(new Intent(UploadMultipleHumanCentricAgreement.this,UserLoginActivity.class));
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", R.drawable.ic_baseline_cancel_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                             dialogInterface.dismiss();
+                    }
+                })
+                .build();
+
+        // Show Dialog
+        mDialog.show();
+    }
+
+    private void toolbarClick() {
+        ImageView feedback,logout;
+        feedback=findViewById(R.id.toolbar_feedback);
+        logout=findViewById(R.id.toolbar_logout);
+        feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UploadMultipleHumanCentricAgreement.this, UserFeedBackActivity.class));
+                finish();
+
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutDialogue();
+
+            }
+        });
+
+        feedback.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Feedback", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        logout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+    }
+
     private void askForPermission() {
         if ((ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) +
@@ -305,13 +388,13 @@ public class MultipleImageUpload extends AppCompatActivity {
                 Snackbar.make(this.findViewById(android.R.id.content),
                         "Please grant permissions to write data in sdcard",
                         Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
-                        v -> ActivityCompat.requestPermissions(MultipleImageUpload.this,
+                        v -> ActivityCompat.requestPermissions(UploadMultipleHumanCentricAgreement.this,
                                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                                         Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                 REQUEST_CODE_PERMISSIONS)).show();
             } else {
                 /* Request for permission */
-                ActivityCompat.requestPermissions(MultipleImageUpload.this,
+                ActivityCompat.requestPermissions(UploadMultipleHumanCentricAgreement.this,
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         REQUEST_CODE_PERMISSIONS);
@@ -330,7 +413,7 @@ public class MultipleImageUpload extends AppCompatActivity {
                 showChooser();
             } else {
                 // Permission Denied
-                Toast.makeText(MultipleImageUpload.this, "Permission Denied!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UploadMultipleHumanCentricAgreement.this, "Permission Denied!", Toast.LENGTH_SHORT).show();
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -338,7 +421,7 @@ public class MultipleImageUpload extends AppCompatActivity {
     }
 
     private void showMessageOKCancel(DialogInterface.OnClickListener okListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MultipleImageUpload.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(UploadMultipleHumanCentricAgreement.this);
         final AlertDialog dialog = builder.setMessage("You need to grant access to Read External Storage")
                 .setPositiveButton("OK", okListener)
                 .setNegativeButton("Cancel", null)
@@ -346,11 +429,31 @@ public class MultipleImageUpload extends AppCompatActivity {
 
         dialog.setOnShowListener(arg0 -> {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
-                    ContextCompat.getColor(MultipleImageUpload.this, android.R.color.holo_blue_light));
+                    ContextCompat.getColor(UploadMultipleHumanCentricAgreement.this, android.R.color.holo_blue_light));
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
-                    ContextCompat.getColor(MultipleImageUpload.this, android.R.color.holo_red_light));
+                    ContextCompat.getColor(UploadMultipleHumanCentricAgreement.this, android.R.color.holo_red_light));
         });
 
         dialog.show();
     }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(UploadMultipleHumanCentricAgreement.this, UploadHumanCentricAgreementActivity.class));
+        finish();
+    }
+
+    private void backButton() {
+        ImageView backButton = findViewById(R.id.toolbar_image);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UploadMultipleHumanCentricAgreement.this, UploadHumanCentricAgreementActivity.class));
+                finish();
+            }
+        });
+
+
+    }
+
 }
