@@ -267,13 +267,11 @@ public class UploadMultipleImage extends AppCompatActivity {
             }
 
             // create a map of data to pass along
-            RequestBody description = createPartFromString("www.androidlearning.com");
+            RequestBody description = createPartFromString("www.kletech.ac.in");
             RequestBody size = createPartFromString("" + parts.size());
             PostData data = new PostData();
             // finally, execute the request
             String email = sharedPrefsManager.getStringValue("userEmail", "unknown@gmail.com");
-            int index = email.indexOf('@');
-            String Email = email.substring(0, index);
             SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(this);
             RequestBody Category = createPartFromString(sharedPrefsManager.getStringValue("categoryName", "Other"));
             RequestBody humanCentricAgreement = createPartFromString(sharedPrefsManager.getStringValue("humanAgreementName", "None"));
@@ -288,13 +286,13 @@ public class UploadMultipleImage extends AppCompatActivity {
             RequestBody screenSize = createPartFromString(sharedPrefsManager.getStringValue("screenSize", "Null"));
             RequestBody dslr = createPartFromString(sharedPrefsManager.getStringValue("dslr", "Null"));
             RequestBody category = createPartFromString(sharedPrefsManager.getStringValue("category", "Null"));
-            RequestBody isHumanPresent = createPartFromString(sharedPrefsManager.getStringValue("isHumanPresnt", "Null"));
+            RequestBody isHumanPresent = createPartFromString(sharedPrefsManager.getStringValue("isHumanPresent", "Null"));
             RequestBody selfie = createPartFromString(sharedPrefsManager.getStringValue("selfie", "Null"));
             RequestBody children = createPartFromString(sharedPrefsManager.getStringValue("children", "Null"));
             RequestBody consent = createPartFromString(sharedPrefsManager.getStringValue("consent", "Null"));
             RequestBody props = createPartFromString(sharedPrefsManager.getStringValue("props", "Null"));
             RequestBody imageType = createPartFromString(sharedPrefsManager.getStringValue("imageType", "Null"));
-            RequestBody username = createPartFromString(Email);
+            RequestBody username = createPartFromString(email);
 
             Call<ResponseBody> call = service.uploadMultiple(humanCentricAgreement, imageType, description, size, Category, subCategory, username, dataType, model, screenSize, orientation, dslr, category, location, subLocation, timing, lighting, isHumanPresent, selfie, createPartFromString("Single"), children, props, consent, parts);
             call.enqueue(new Callback<ResponseBody>() {

@@ -20,6 +20,16 @@ public class ResponseModel {
     public boolean isMobileExist;
     @SerializedName("isEmailExist")
     public boolean isEmailExist;
+    @SerializedName("isAgreementUploaded")
+    public boolean isAgreementUploaded;
+
+    public boolean isAgreementUploaded() {
+        return isAgreementUploaded;
+    }
+
+    public void setAgreementUploaded(boolean agreementUploaded) {
+        isAgreementUploaded = agreementUploaded;
+    }
 
 
     public boolean isMobileExist() {
@@ -64,4 +74,5 @@ public class ResponseModel {
     public boolean isAuthenticated() {
         return isAuthenticated;
     }
+
 }

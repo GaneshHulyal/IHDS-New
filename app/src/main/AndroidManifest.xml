@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="in.ganeshhulyal.aidatalab">
-
-
     <!-- user Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -25,7 +23,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AIDataLab"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.PrivacyPolicyActivity"></activity>
+        <activity android:name=".activities.AdminApproveUsers"></activity>
+        <activity android:name=".activities.UserDetails" />
+        <activity android:name=".activities.AdminViewUsers" />
+        <activity android:name=".activities.AdminDashboard" />
+        <activity android:name=".activities.PrivacyPolicyActivity" />
         <activity android:name=".activities.DownloadAgreementActivity" />
         <activity android:name=".activities.UserFeedBackActivity" />
         <activity android:name=".activities.UploadMultipleVideo" />
@@ -34,6 +36,7 @@
         <activity android:name=".activities.UploadAgreementActivity" />
         <activity android:name=".activities.UploadMultipleImage" />
         <activity android:name=".activities.UserUploadMenuActivity" />
+        <activity android:name=".activities.UploadAgreement" />
         <activity android:name=".activities.MetaDataNonHumanCentricActivity" />
         <activity android:name=".activities.MetaDataHumanCentricActivity" />
         <activity android:name=".activities.UserCategoryActivity" />

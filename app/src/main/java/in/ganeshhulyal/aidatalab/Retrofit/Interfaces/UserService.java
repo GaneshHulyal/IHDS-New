@@ -54,6 +54,13 @@ public interface UserService {
             @Field("feedback") String feedback
     );
 
+    @FormUrlEncoded
+    @POST("admin-api/resistrationAgreement.php")
+    Call<ResponseModel> addAgreement(
+            @Field("email") String email,
+            @Field("isUploaded") String isUploaded
+    );
+
 
 
 }

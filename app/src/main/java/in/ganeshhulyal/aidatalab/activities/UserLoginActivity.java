@@ -92,13 +92,26 @@ public class UserLoginActivity extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 if (response.body().isAuthenticated()) {
                                     if (response.body().isVerified()) {
-                                        Toast.makeText(UserLoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
-                                        sharedPrefsManager.saveStringValue("userEmail", response.body().getEmail());
-                                        sharedPrefsManager.saveBoolValue("isLoggedIn", true);
-                                        sharedPrefsManager.saveBoolValue("isFromRegister", false);
-                                        sharedPrefsManager.saveLongValue("ExpiredDate", System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1));
-                                        startActivity(new Intent(UserLoginActivity.this, UploadAgreementActivity.class));
-                                        finish();
+                                        if(Email.equals("admin@klesamsung")){
+                                            startActivity(new Intent(UserLoginActivity.this,AdminDashboard.class));
+                                            finish();
+                                        }
+                                        else {
+                                            if(response.body().isAgreementUploaded()){
+                                                Toast.makeText(UserLoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                                                sharedPrefsManager.saveStringValue("userEmail", response.body().getEmail());
+                                                sharedPrefsManager.saveBoolValue("isLoggedIn", true);
+                                                sharedPrefsManager.saveBoolValue("isFromRegister", false);
+                                                sharedPrefsManager.saveLongValue("ExpiredDate", System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1));
+                                                startActivity(new Intent(UserLoginActivity.this, UserCategoryActivity.class));
+                                                finish();
+                                            }
+                                            else{
+                                                sharedPrefsManager.saveStringValue("userEmail", Email);
+                                                startActivity(new Intent(UserLoginActivity.this,UploadAgreementActivity.class));
+                                                finish();
+                                            }
+                                        }
                                     } else {
                                         Toast.makeText(UserLoginActivity.this, "Waiting for admin approval.", Toast.LENGTH_SHORT).show();
                                     }

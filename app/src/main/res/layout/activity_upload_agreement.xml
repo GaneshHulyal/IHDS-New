@@ -30,6 +30,7 @@
                 android:layout_weight="5"
                 android:fontFamily="@font/poppins_semibold"
                 android:padding="@dimen/padding_14dp"
+                android:layout_gravity="center"
                 android:text="Upload Agreement"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/heading_size" />

@@ -282,8 +282,6 @@ public class UploadActivity extends AppCompatActivity {
 
 
             String email = sharedPrefsManager.getStringValue("userEmail", "unknown@gmail.com");
-            int index = email.indexOf('@');
-            String Email = email.substring(0, index);
             String Category = sharedPrefsManager.getStringValue("categoryName", "Other");
             String subCategory = sharedPrefsManager.getStringValue("subCategoryName", "Other");
             String dataType = "Image";
@@ -297,7 +295,7 @@ public class UploadActivity extends AppCompatActivity {
             String screenSize = sharedPrefsManager.getStringValue("screenSize", "Null");
             String dslr = sharedPrefsManager.getStringValue("dslr", "Null");
             String category = sharedPrefsManager.getStringValue("category", "Null");
-            String isHumanPresent = sharedPrefsManager.getStringValue("isHumanPresnt", "Null");
+            String isHumanPresent = sharedPrefsManager.getStringValue("isHumanPresent", "Null");
             String selfie = sharedPrefsManager.getStringValue("selfie", "Null");
             String children = sharedPrefsManager.getStringValue("children", "Null");
             String consent = sharedPrefsManager.getStringValue("consent", "Null");
@@ -337,13 +335,13 @@ public class UploadActivity extends AppCompatActivity {
                 entity.addPart("subLocation", new StringBody(subLocation));
                 entity.addPart("timing", new StringBody(timing));
                 entity.addPart("lighting", new StringBody(lighting));
-                entity.addPart("humanPresent", new StringBody(isHumanPresent));
+                entity.addPart("isHumanPresent", new StringBody(isHumanPresent));
                 entity.addPart("selfie", new StringBody(selfie));
                 entity.addPart("type", new StringBody(imageType));
                 entity.addPart("children", new StringBody(children));
                 entity.addPart("props", new StringBody(props));
                 entity.addPart("consentObtained", new StringBody(consent));
-                entity.addPart("userName", new StringBody(Email));
+                entity.addPart("userName", new StringBody(email));
 
 
                 httpclient.getConnectionManager().getSchemeRegistry().register(
