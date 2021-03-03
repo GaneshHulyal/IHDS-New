@@ -271,7 +271,7 @@ public class UploadMultipleImage extends AppCompatActivity {
             RequestBody size = createPartFromString("" + parts.size());
             PostData data = new PostData();
             // finally, execute the request
-            String email = sharedPrefsManager.getStringValue("userEmail", "unknown@gmail.com");
+            String email = sharedPrefsManager.getStringValue("userEmail", "admin@klesamsung");
             SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(this);
             RequestBody Category = createPartFromString(sharedPrefsManager.getStringValue("categoryName", "Other"));
             RequestBody humanCentricAgreement = createPartFromString(sharedPrefsManager.getStringValue("humanAgreementName", "None"));

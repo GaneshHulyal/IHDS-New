@@ -281,7 +281,7 @@ public class UploadActivity extends AppCompatActivity {
         private String uploadFile() {
 
 
-            String email = sharedPrefsManager.getStringValue("userEmail", "unknown@gmail.com");
+            String email = sharedPrefsManager.getStringValue("userEmail", "admin@klesamsung");
             String Category = sharedPrefsManager.getStringValue("categoryName", "Other");
             String subCategory = sharedPrefsManager.getStringValue("subCategoryName", "Other");
             String dataType = "Image";

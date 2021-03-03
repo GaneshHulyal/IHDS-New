@@ -103,7 +103,7 @@ public class UserLoginActivity extends AppCompatActivity {
                                                 sharedPrefsManager.saveBoolValue("isLoggedIn", true);
                                                 sharedPrefsManager.saveBoolValue("isFromRegister", false);
                                                 sharedPrefsManager.saveLongValue("ExpiredDate", System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1));
-                                                startActivity(new Intent(UserLoginActivity.this, UserCategoryActivity.class));
+                                                startActivity(new Intent(UserLoginActivity.this, UserDashboard.class));
                                                 finish();
                                             }
                                             else{

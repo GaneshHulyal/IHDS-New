@@ -180,9 +180,7 @@ public class UploadAgreement extends AppCompatActivity {
         private String uploadFile() {
 
 
-            String email = sharedPrefsManager.getStringValue("userEmail", "unknown@gmail.com");
-            int index = email.indexOf('@');
-            String Email = email.substring(0, index);
+            String email = sharedPrefsManager.getStringValue("userEmail", "admin@klesamsung");
             String Category = sharedPrefsManager.getStringValue("categoryName", "Other");
             String subCategory = sharedPrefsManager.getStringValue("subCategoryName", "Other");
 
@@ -210,8 +208,8 @@ public class UploadAgreement extends AppCompatActivity {
                 entity.addPart("Category", new StringBody(Category));
                 entity.addPart("SubCat",
                         new StringBody(subCategory));
-                entity.addPart("userName", new StringBody(Email));
-                entity.addPart("userName", new StringBody(Email));
+                entity.addPart("userName", new StringBody(email));
+                entity.addPart("userName", new StringBody(email));
                 entity.addPart("agreement", new StringBody("Agreements"));
 
                 httpclient.getConnectionManager().getSchemeRegistry().register(

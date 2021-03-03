@@ -140,6 +140,7 @@
                         android:layout_toRightOf="@+id/agreementCheckBoxAnother"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:padding="@dimen/padding_8dp"
                         android:fontFamily="@font/poppins_semibold"
                         android:text="TextView"
                         android:textColorLink="@color/colorPrimary" />

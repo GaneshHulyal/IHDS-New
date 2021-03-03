@@ -235,13 +235,11 @@ public class UploadMultipleHumanCentricAgreement extends AppCompatActivity {
             RequestBody size = createPartFromString("" + parts.size());
             PostData data = new PostData();
             // finally, execute the request
-            String email = sharedPrefsManager.getStringValue("userEmail", "unknown@gmail.com");
-            int index = email.indexOf('@');
-            String Email = email.substring(0, index);
+            String email = sharedPrefsManager.getStringValue("userEmail", "admin@klesamsung");
             SharedPrefsManager sharedPrefsManager = new SharedPrefsManager(this);
             RequestBody Category = createPartFromString(sharedPrefsManager.getStringValue("categoryName", "Other"));
             RequestBody subCategory = createPartFromString(sharedPrefsManager.getStringValue("subCategoryName", "Other"));
-            RequestBody username = createPartFromString(Email);
+            RequestBody username = createPartFromString(email);
 
             Call<ResponseBody> call = service.uploadMultipleAgreement(Category,subCategory,username,description,size,parts);
             call.enqueue(new Callback<ResponseBody>() {

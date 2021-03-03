@@ -84,19 +84,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floating_action_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@+id/footerView"
-        app:tint="@color/white"
-        android:contentDescription="Sample Description Goes Here"
-        android:src="@drawable/ic_baseline_cloud_download_24"/>
-
     <LinearLayout
         android:id="@+id/footerView"
         android:layout_width="match_parent"

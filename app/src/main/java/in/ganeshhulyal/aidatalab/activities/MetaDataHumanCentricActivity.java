@@ -52,7 +52,6 @@ public class MetaDataHumanCentricActivity extends AppCompatActivity {
         initToolbar();
         toolbarClick();
         init();
-        floatingActionButton();
     }
 
     private void initToolbar() {

@@ -23,7 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AIDataLab"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.AdminApproveUsers"></activity>
+        <activity android:name=".activities.KLEPrivacyPolicy"></activity>
+        <activity android:name=".activities.UserDashboard" />
+        <activity android:name=".activities.AdminApproveUsers" />
         <activity android:name=".activities.UserDetails" />
         <activity android:name=".activities.AdminViewUsers" />
         <activity android:name=".activities.AdminDashboard" />

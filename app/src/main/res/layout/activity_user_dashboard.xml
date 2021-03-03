@@ -6,16 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".activities.AdminDashboard">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipeRefreshLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-
-        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
@@ -31,22 +30,28 @@
                     layout="@layout/toolbar_item" />
 
                 <TextView
+                    android:id="@+id/userName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="5"
                     android:fontFamily="@font/poppins_semibold"
                     android:padding="@dimen/padding_14dp"
-                    android:text="Hello, Admin"
+                    android:textAlignment="center"
+                    android:text="User Dashboard"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/heading_size" />
 
                 <TextView
+                    android:id="@+id/userEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="5"
                     android:fontFamily="@font/poppins_semibold"
                     android:padding="@dimen/padding_14dp"
-                    android:text="Server Statistics"
+                    android:visibility="gone"
+                    android:text="User Email"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/normal_font_size" />
 
@@ -78,13 +83,13 @@
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins_semibold"
                                 android:padding="@dimen/padding_8dp"
-                                android:text="Number of Users"
+                                android:text="Total Uploads"
                                 android:textColor="@color/colorPrimary"
                                 android:textSize="@dimen/text_message_size" />
 
 
                             <TextView
-                                android:id="@+id/noOfPeople"
+                                android:id="@+id/totalUploads"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
@@ -122,13 +127,13 @@
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins_semibold"
                                 android:padding="@dimen/padding_8dp"
-                                android:text="Total Uploads"
+                                android:text="Text Centric"
                                 android:textColor="@color/colorPrimary"
                                 android:textSize="@dimen/text_message_size" />
 
 
                             <TextView
-                                android:id="@+id/noOfTotalImages"
+                                android:id="@+id/noOfTextCentric"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -238,56 +243,62 @@
 
                     </androidx.cardview.widget.CardView>
 
-
                 </LinearLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_semibold"
+                    android:layout_margin="@dimen/margin"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:padding="@dimen/padding_14dp"
-                    android:text="Admin Activity"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/normal_font_size" />
+                    app:cardBackgroundColor="@color/white"
+                    app:cardCornerRadius="@dimen/corner_radius_medium"
+                    app:cardElevation="5dp"
+                    app:cardUseCompatPadding="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:padding="@dimen/padding_8dp"
+                            android:text="Total QC Passed Images"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="@dimen/text_message_size" />
+
+                        <TextView
+                            android:id="@+id/qcCheckNumbers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:padding="@dimen/padding_8dp"
+                            android:text="00"
+                            android:textColor="@color/green"
+                            android:textSize="@dimen/normal_font_size" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/launchUser"
-                    android:layout_width="match_parent"
+                    android:id="@+id/goBack"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/padding_8dp"
-                    android:padding="@dimen/padding_14dp"
-                    android:text="Launch User App" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="100"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/viewUsers"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/padding_8dp"
-                        android:layout_weight="50"
-                        android:padding="@dimen/padding_14dp"
-                        android:text="View Users" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/approveUsers"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/padding_8dp"
-                        android:layout_weight="50"
-                        android:padding="@dimen/padding_14dp"
-                        android:text="Approve Users" />
-
-                </LinearLayout>
+                    android:layout_gravity="center"
+                    android:text="Next"
+                    />
 
             </LinearLayout>
-        </ScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/footerView"

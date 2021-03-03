@@ -76,7 +76,7 @@ public class UserFeedBackActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
-                        Toast.makeText(UserFeedBackActivity.this, "Thanks you!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserFeedBackActivity.this, "Thank you!", Toast.LENGTH_SHORT).show();
                         finish();
                         moveTaskToBack(true);
                     }
