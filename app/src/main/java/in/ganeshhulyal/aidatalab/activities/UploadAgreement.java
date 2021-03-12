@@ -248,6 +248,7 @@ public class UploadAgreement extends AppCompatActivity {
             //showAlert(result);
             Toast.makeText(UploadAgreement.this, "Agreement Uploaded", Toast.LENGTH_SHORT).show();
             String email = sharedPrefsManager.getStringValue("userEmail", "abc@gmail.com");
+            Log.d(TAG, "onPostExecute: "+email);
             sharedPrefsManager.saveBoolValue("isAgreementUploaded",true);
             Call<ResponseModel> call = MyClient.getInstance().getMyApi().addAgreement(email, "true");
             call.enqueue(new Callback<ResponseModel>() {

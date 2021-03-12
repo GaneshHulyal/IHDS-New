@@ -256,7 +256,8 @@ public class AdminApproveUsers extends AppCompatActivity implements SwipeRefresh
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+               startActivity(new Intent(AdminApproveUsers.this,AdminDashboard.class));
+               finish();
             }
         });
 

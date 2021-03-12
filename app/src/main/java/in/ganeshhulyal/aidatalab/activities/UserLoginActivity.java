@@ -113,7 +113,17 @@ public class UserLoginActivity extends AppCompatActivity {
                                             }
                                         }
                                     } else {
-                                        Toast.makeText(UserLoginActivity.this, "Waiting for admin approval.", Toast.LENGTH_SHORT).show();
+                                        if(!response.body().isAgreementUploaded){
+                                            sharedPrefsManager.saveStringValue("userEmail", response.body().getEmail());
+                                            sharedPrefsManager.saveBoolValue("isLoggedIn", true);
+                                            sharedPrefsManager.saveBoolValue("isFromRegister", false);
+                                            sharedPrefsManager.saveLongValue("ExpiredDate", System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1));
+                                           startActivity(new Intent(UserLoginActivity.this,UploadAgreementActivity.class));
+                                           finish();
+                                        }else {
+                                            startActivity(new Intent(UserLoginActivity.this, WaitForApprovalActivity.class));
+                                            finish();
+                                        }
                                     }
                                 } else {
                                     Toast.makeText(UserLoginActivity.this, "Failed!", Toast.LENGTH_SHORT).show();

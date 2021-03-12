@@ -10,9 +10,19 @@ public class ModelApproveUser {
     @SerializedName("email")
     public String email;
 
-
     @SerializedName("agreementStatus")
     public String agreementStatus;
+
+    @SerializedName("agreementUrl")
+    public String agreementUrl;
+
+    public String getAgreementUrl() {
+        return agreementUrl;
+    }
+
+    public void setAgreementUrl(String agreementUrl) {
+        this.agreementUrl = agreementUrl;
+    }
 
     public String getAgreementStatus() {
         return agreementStatus;

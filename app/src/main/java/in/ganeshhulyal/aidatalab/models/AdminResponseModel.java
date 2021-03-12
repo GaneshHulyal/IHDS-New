@@ -20,6 +20,8 @@ public class AdminResponseModel {
     public String totalTextCentric;
 
 
+
+
     public String getTotalTextCentric() {
         return totalTextCentric;
     }

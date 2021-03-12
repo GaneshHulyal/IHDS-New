@@ -1,6 +1,7 @@
 package in.ganeshhulyal.aidatalab.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import in.ganeshhulyal.aidatalab.R;
+import in.ganeshhulyal.aidatalab.activities.ApproveUserProfile;
 import in.ganeshhulyal.aidatalab.models.AdminResponseModel;
 import in.ganeshhulyal.aidatalab.models.ModelApproveUser;
 import in.ganeshhulyal.aidatalab.others.MyClientAdmin;
@@ -24,11 +26,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static in.ganeshhulyal.aidatalab.utils.FileUtil.TAG;
+
 
 public class ApproveUserAdapter extends RecyclerView.Adapter<ApproveUserAdapter.UsersViewHolder> {
 
-    Context context;
-    List<ModelApproveUser> userListResponseData;
+    private Context context;
+    private List<ModelApproveUser> userListResponseData;
+    private boolean agreementUploadStatus;
     private SharedPrefsManager sharedPrefsManager;
 
     public ApproveUserAdapter(Context context, List<ModelApproveUser> userListResponseData) {
@@ -52,34 +57,20 @@ public class ApproveUserAdapter extends RecyclerView.Adapter<ApproveUserAdapter.
         holder.email.setText(userListResponseData.get(position).getEmail());
         if (userListResponseData.get(position).getAgreementStatus().equals("true")) {
             holder.approve.setText("Agreement Upload Status: Completed");
+            agreementUploadStatus = true;
         } else {
             holder.approve.setText("Agreement Upload Status: Incomplete");
+            agreementUploadStatus = false;
         }
         // implement setONCLickListtener on itemView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, "User Approved.", Toast.LENGTH_SHORT).show();
-                Call<AdminResponseModel> call = MyClientAdmin.getInstance().getMyApi().approveUser(userListResponseData.get(position).getEmail());
-                holder.approved.setColorFilter(ContextCompat.getColor(context, android.R.color.holo_green_dark),
-                        PorterDuff.Mode.MULTIPLY);
-                call.enqueue(new Callback<AdminResponseModel>() {
-                    @Override
-                    public void onResponse(Call<AdminResponseModel> call, Response<AdminResponseModel> response) {
-                        Log.d("Msg", response.toString());
-                        if (response.isSuccessful()) {
-                            Log.d("Msg", "Response is Successful");
-                            Toast.makeText(context, "User Approved.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.d("Msg", "Failed");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<AdminResponseModel> call, Throwable t) {
-
-                    }
-                });
+                String userEmail = userListResponseData.get(position).getEmail();
+                sharedPrefsManager.saveStringValue("approveUserEmail", userEmail);
+                sharedPrefsManager.saveStringValue("userFullName", userListResponseData.get(position).getFullName());
+                sharedPrefsManager.saveStringValue("agreementUrl", userListResponseData.get(position).getAgreementUrl());
+                context.startActivity(new Intent(context, ApproveUserProfile.class));
             }
         });
     }
@@ -105,7 +96,7 @@ public class ApproveUserAdapter extends RecyclerView.Adapter<ApproveUserAdapter.
             name = (TextView) itemView.findViewById(R.id.name);
             email = (TextView) itemView.findViewById(R.id.email);
             approve = itemView.findViewById(R.id.approve);
-            approved=itemView.findViewById(R.id.approved);
+            approved = itemView.findViewById(R.id.approved);
 
         }
     }

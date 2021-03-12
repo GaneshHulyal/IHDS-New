@@ -123,7 +123,7 @@ public class UploadAgreementActivity extends AppCompatActivity {
                         new SharedPrefsManager(context).saveBoolValue("isAllAgreementUploaded", true);
                         finish();
                     } else {
-                        startActivity(new Intent(UploadAgreementActivity.this, UserDashboard.class));
+                        startActivity(new Intent(UploadAgreementActivity.this, UserLoginActivity.class));
                         Toast.makeText(context, "User Registered Successfully!", Toast.LENGTH_SHORT).show();
                         new SharedPrefsManager(context).saveBoolValue("isAllAgreementUploaded", true);
                         finish();
