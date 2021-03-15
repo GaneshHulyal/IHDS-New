@@ -6,7 +6,10 @@
         <entry key="app/src/main/res/layout/activity_admin_approve_users.xml" value="0.34375" />
         <entry key="app/src/main/res/layout/activity_admin_dashboard.xml" value="0.27760416666666665" />
         <entry key="app/src/main/res/layout/activity_approve_user_profile.xml" value="0.35885416666666664" />
+        <entry key="app/src/main/res/layout/activity_feed_back.xml" value="0.2838541666666667" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_splash_screen.xml" value="0.27760416666666665" />
+        <entry key="app/src/main/res/layout/activity_update_password.xml" value="0.26875" />
         <entry key="app/src/main/res/layout/activity_wait_for_approval.xml" value="0.25" />
         <entry key="app/src/main/res/layout/user_list_items_approve.xml" value="0.35885416666666664" />
       </map>

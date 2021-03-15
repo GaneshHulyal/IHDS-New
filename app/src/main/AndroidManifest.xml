@@ -24,8 +24,11 @@
         android:theme="@style/Theme.AIDataLab"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".activities.ApproveUserProfile"
+            android:name=".activities.UpdatePassword"
             android:exported="true"></activity>
+        <activity
+            android:name=".activities.ApproveUserProfile"
+            android:exported="true" />
         <activity
             android:name=".activities.WaitForApprovalActivity"
             android:exported="true" />

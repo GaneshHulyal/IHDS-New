@@ -33,13 +33,12 @@ import retrofit2.Response;
 public class UserLoginActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
     private TextInputEditText userEmailEdit, userPasswordEdit;
-    private TextView toolbarName;
+    private TextView toolbarName,resetPassword;
     private TextInputLayout userEmailLayout, userPasswordLayout;
     private String Email, Password;
     private Button loginButton, backToRegister;
     private String email;
     private SharedPrefsManager sharedPrefsManager;
-    private TextView resetPassword;
     private SharedPrefsManager SharedPref;
     private FirebaseAuth mAuth;
     private boolean exit = false;
@@ -64,6 +63,12 @@ public class UserLoginActivity extends AppCompatActivity {
             //startActivity(new Intent(LoginActivity.this, AgreementActivity.class));
             //finish();
         }
+        resetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UserLoginActivity.this,UpdatePassword.class));
+            }
+        });
 
     }
 
@@ -180,6 +185,7 @@ public class UserLoginActivity extends AppCompatActivity {
         userPasswordLayout = findViewById(R.id.userPasswordLayout);
         userEmailLayout = findViewById(R.id.userUSNLayout);
         userEmailEdit = findViewById(R.id.userEmail);
+        resetPassword=findViewById(R.id.resendPassword);
         userPasswordEdit = findViewById(R.id.userPassword);
         mAuth = FirebaseAuth.getInstance();
         loginButton = findViewById(R.id.loginButton);

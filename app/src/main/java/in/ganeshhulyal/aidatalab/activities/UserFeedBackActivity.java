@@ -25,9 +25,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserFeedBackActivity extends AppCompatActivity {
-    private Button submitFeedbackBtn, btnExit;
-    private TextInputLayout feedbackLayout;
-    private TextInputEditText feedbackField;
+    private Button UserFeedBackActivityButton, btnExit;
+    private TextInputLayout emailLayout;
+    private TextInputEditText emailField;
     private SharedPrefsManager sharedPrefsManager;
     private String userEmail, feedback;
     private Context context;
@@ -36,15 +36,15 @@ public class UserFeedBackActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed_back);
+        setContentView(R.layout.activity_update_password);
         context = this;
         init();
-        feedbackField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        emailField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
-//                    GradientDrawable drawable = (GradientDrawable)feedbackField.getBackground();
+//                    GradientDrawable drawable = (GradientDrawable)emailField.getBackground();
 //                    drawable.setStroke(2, Color.RED);
-                    feedbackField.setHintTextColor(Color.RED);
+                    emailField.setHintTextColor(Color.RED);
                 }
             }
         });
@@ -54,12 +54,12 @@ public class UserFeedBackActivity extends AppCompatActivity {
                 showDialogueDialog();
             }
         });
-        submitFeedbackBtn.setOnClickListener(new View.OnClickListener() {
+        UserFeedBackActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                feedback = feedbackField.getText().toString();
+                feedback = emailField.getText().toString();
                 if(feedback.isEmpty()){
-                    feedbackField.setError("Please Enter Feedback");
+                    emailField.setError("Please Enter Feedback");
                 }else {
                     storeFeedback();
                 }
@@ -97,9 +97,9 @@ public class UserFeedBackActivity extends AppCompatActivity {
     private void init() {
         sharedPrefsManager = new SharedPrefsManager(this);
         userEmail = sharedPrefsManager.getStringValue("userEmail", "abc@gmail.com");
-        submitFeedbackBtn=findViewById(R.id.feedback_button);
-        feedbackLayout = findViewById(R.id.feedback_layout);
-        feedbackField = findViewById(R.id.feedback_field);
+        UserFeedBackActivityButton=findViewById(R.id.feedback_button);
+        emailLayout = findViewById(R.id.feedback_layout);
+        emailField = findViewById(R.id.feedback_field);
         btnExit = findViewById(R.id.exit_button);
     }
 

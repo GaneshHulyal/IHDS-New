@@ -55,6 +55,12 @@ public interface UserService {
     );
 
     @FormUrlEncoded
+    @POST("send.php")
+    Call<ResponseModel> resetPassword(
+            @Field("email") String email
+    );
+
+    @FormUrlEncoded
     @POST("admin-api/resistrationAgreement.php")
     Call<ResponseModel> addAgreement(
             @Field("email") String email,

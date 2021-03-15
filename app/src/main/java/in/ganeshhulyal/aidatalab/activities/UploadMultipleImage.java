@@ -245,7 +245,8 @@ public class UploadMultipleImage extends AppCompatActivity {
     }
 
     private void uploadImagesToServer() {
-        if (InternetConnection.checkConnection(UploadMultipleImage.this)) {
+       // InternetConnection.checkConnection(UploadMultipleImage.this
+        if (true) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(ApiService.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())

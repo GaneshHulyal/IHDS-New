@@ -28,6 +28,7 @@ import com.budiyev.android.imageloader.ImageLoader;
 import com.budiyev.android.imageloader.ImageUtils;
 import com.budiyev.android.imageloader.LoadCallback;
 import com.google.android.material.button.MaterialButton;
+import com.shreyaspatil.MaterialDialog.MaterialDialog;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -47,7 +48,7 @@ import retrofit2.Response;
 
 public class ApproveUserProfile extends AppCompatActivity {
     private TextView userName, userEmail, userMobile;
-    private String userNameString, userEmailString, userMobileString,agreementUrl;
+    private String userNameString, userEmailString, userMobileString, agreementUrl;
     private AppCompatImageView agreementImageView;
     private SharedPrefsManager sharedPrefsManager;
     private Context context;
@@ -59,6 +60,8 @@ public class ApproveUserProfile extends AppCompatActivity {
         setContentView(R.layout.activity_approve_user_profile);
         context = this;
         init();
+        toolbarClick();
+        backButton();
         try {
             mainMethod();
         } catch (IOException e) {
@@ -66,6 +69,20 @@ public class ApproveUserProfile extends AppCompatActivity {
         }
     }
 
+
+    private void init() {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        userName = findViewById(R.id.userName);
+        userEmail = findViewById(R.id.userEmail);
+        userMobile = findViewById(R.id.userMobile);
+        agreementImageView = findViewById(R.id.agreementImage);
+        approveUser = findViewById(R.id.approveUser);
+        sharedPrefsManager = new SharedPrefsManager(this);
+        userEmailString = sharedPrefsManager.getStringValue("approveUserEmail", "abc@gmaail.com");
+        agreementUrl = sharedPrefsManager.getStringValue("agreementUrl", "https://learn.getgrav.org/user/pages/11.troubleshooting/01.page-not-found/error-404.png");
+        userNameString = sharedPrefsManager.getStringValue("userFullName", "abc");
+    }
 
 
     private void approveUser() {
@@ -89,9 +106,36 @@ public class ApproveUserProfile extends AppCompatActivity {
         });
     }
 
+    public void showDialogueDialog() {
+
+        MaterialDialog mDialog = new MaterialDialog.Builder(this)
+                .setTitle("Exit")
+                .setMessage("Do you want to exit?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", R.drawable.ic_baseline_check_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                        Toast.makeText(ApproveUserProfile.this, "Thank you!", Toast.LENGTH_SHORT).show();
+                        finish();
+                        moveTaskToBack(true);
+                    }
+                })
+                .setNegativeButton("No", R.drawable.ic_baseline_cancel_24, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(com.shreyaspatil.MaterialDialog.interfaces.DialogInterface dialogInterface, int which) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .build();
+
+        // Show Dialog
+        mDialog.show();
+    }
+
+
     private void mainMethod() throws IOException {
-        agreementUrl="http://210.212.192.31/"+agreementUrl;
-        Log.d("Msg", "mainMethod: "+agreementUrl);
+        agreementUrl = "http://210.212.192.31/" + agreementUrl;
+        Log.d("Msg", "mainMethod: " + agreementUrl);
         URL url = new URL(agreementUrl);
         ImageLoader.with(this)
                 .from(agreementUrl)
@@ -110,23 +154,53 @@ public class ApproveUserProfile extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(context, "User Approved Successfully!", Toast.LENGTH_SHORT).show();
                 approveUser();
-                startActivity(new Intent(ApproveUserProfile.this,AdminApproveUsers.class));
+                startActivity(new Intent(ApproveUserProfile.this, AdminApproveUsers.class));
                 finish();
             }
         });
     }
 
-    private void init() {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-        userName = findViewById(R.id.userName);
-        userEmail = findViewById(R.id.userEmail);
-        userMobile = findViewById(R.id.userMobile);
-        agreementImageView = findViewById(R.id.agreementImage);
-        approveUser=findViewById(R.id.approveUser);
-        sharedPrefsManager = new SharedPrefsManager(this);
-        userEmailString=sharedPrefsManager.getStringValue("approveUserEmail","abc@gmaail.com");
-        agreementUrl=sharedPrefsManager.getStringValue("agreementUrl","https://learn.getgrav.org/user/pages/11.troubleshooting/01.page-not-found/error-404.png");
-        userNameString=sharedPrefsManager.getStringValue("userFullName","abc");
+    private void toolbarClick() {
+        ImageView feedback, logout;
+        feedback = findViewById(R.id.toolbar_feedback);
+        feedback.setVisibility(View.GONE);
+        logout = findViewById(R.id.toolbar_logout);
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogueDialog();
+
+            }
+        });
+
+
+        feedback.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Feedback", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+        logout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(context, "Logout", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
+    }
+
+    private void backButton() {
+        ImageView backButton = findViewById(R.id.toolbar_image);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
     }
 }
