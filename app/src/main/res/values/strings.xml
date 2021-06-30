@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KLE-SAMSUNG Data Capture Framework</string>
+    <string name="app_name">IDH Data Capture Framework</string>
     <string name="toolbar">Toolbar</string>
     <string name="reg_heding">Enter Your Details</string>
     <string name="option_1">People</string>
@@ -15,4 +15,5 @@
 \nii)  SRI-B and its Affiliates will be using the Personal data commercially and the said data will be deployed in Samsung products, but without disclosing the identity through the personal data collected. \niii)    Personal Data provided by me will be protected as per Samsung Global Privacy Policy.\nI hereby agree to keep my participation in the Program strictly confidential and shall not disclose the details of the Purpose/ Program to any third party.\nI hereby acknowledge that I have knowingly and voluntarily, without duress or reservation of any kind, signed this consent form.
 </string>
     <string name="txtCredits"><a href="https://www.samsung.com/us/account/privacy-policy/">Samsung Privacy Policy</a></string>
+    <string name="add_class">Add Temple</string>
 </resources>

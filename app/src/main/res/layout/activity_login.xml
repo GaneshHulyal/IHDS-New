@@ -25,7 +25,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/poppins_semibold"
                 android:paddingTop="@dimen/paddingTop"
-                android:text="Welcome"
+                android:text="Welcome to"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_size" />
 
@@ -36,7 +36,17 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/poppins_semibold"
                 android:gravity="center"
-                android:text="KLE-SAMSUNG Data Capture Framework"
+                android:text="IHDS-CS"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_semibold"
+                android:gravity="center"
+                android:text="(KLETech Crowdsource Platform)"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/text_size" />
 

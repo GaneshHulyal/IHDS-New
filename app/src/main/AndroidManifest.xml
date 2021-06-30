@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="in.ganeshhulyal.aidatalab">
+    package="in.ganeshhulyal.ihds_dc">
     <!-- user Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -24,41 +24,41 @@
         android:theme="@style/Theme.AIDataLab"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".activities.UpdatePassword"
+            android:name="in.ganeshhulyal.ihds_dc.activities.UpdatePassword"
             android:exported="true"></activity>
         <activity
-            android:name=".activities.ApproveUserProfile"
+            android:name="in.ganeshhulyal.ihds_dc.activities.ApproveUserProfile"
             android:exported="true" />
         <activity
-            android:name=".activities.WaitForApprovalActivity"
+            android:name="in.ganeshhulyal.ihds_dc.activities.WaitForApprovalActivity"
             android:exported="true" />
-        <activity android:name=".activities.KLEPrivacyPolicy" />
-        <activity android:name=".activities.UserDashboard" />
-        <activity android:name=".activities.AdminApproveUsers" />
-        <activity android:name=".activities.UserDetails" />
-        <activity android:name=".activities.AdminViewUsers" />
-        <activity android:name=".activities.AdminDashboard" />
-        <activity android:name=".activities.PrivacyPolicyActivity" />
-        <activity android:name=".activities.DownloadAgreementActivity" />
-        <activity android:name=".activities.UserFeedBackActivity" />
-        <activity android:name=".activities.UploadMultipleVideo" />
-        <activity android:name=".activities.UploadHumanAgreement" />
-        <activity android:name=".activities.UploadMultipleHumanCentricAgreement" />
-        <activity android:name=".activities.UploadAgreementActivity" />
-        <activity android:name=".activities.UploadMultipleImage" />
-        <activity android:name=".activities.UserUploadMenuActivity" />
-        <activity android:name=".activities.UploadAgreement" />
-        <activity android:name=".activities.MetaDataNonHumanCentricActivity" />
-        <activity android:name=".activities.MetaDataHumanCentricActivity" />
-        <activity android:name=".activities.UserCategoryActivity" />
-        <activity android:name=".activities.UploadActivity" />
-        <activity android:name=".activities.UploadHumanCentricAgreementActivity" />
-        <activity android:name=".activities.UserMenu" />
-        <activity android:name=".activities.ImageUploadNonHumanCentric" />
-        <activity android:name=".activities.UserLoginActivity" />
-        <activity android:name=".activities.UserRegistration" />
-        <activity android:name=".activities.MainActivity" />
-        <activity android:name=".activities.SplashScreenActivity">
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.KLEPrivacyPolicy" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UserDashboard" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.AdminApproveUsers" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UserDetails" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.AdminViewUsers" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.AdminDashboard" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.PrivacyPolicyActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.DownloadAgreementActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UserFeedBackActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UploadMultipleVideo" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UploadHumanAgreement" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UploadMultipleHumanCentricAgreement" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UploadAgreementActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UploadMultipleImage" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UserUploadMenuActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UploadAgreement" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.MetaDataNonHumanCentricActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.MetaDataHumanCentricActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UserCategoryActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UploadActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UploadHumanCentricAgreementActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UserMenu" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.ImageUploadNonHumanCentric" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UserLoginActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.UserRegistration" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.MainActivity" />
+        <activity android:name="in.ganeshhulyal.ihds_dc.activities.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

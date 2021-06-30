@@ -24,9 +24,12 @@ android {
             exclude 'META-INF/ASL2.0'
             exclude("META-INF/*.kotlin_module")
         }
+        buildFeatures {
+            viewBinding true
+        }
     }
     defaultConfig {
-        applicationId "in.ganeshhulyal.aidatalab"
+        applicationId "in.ganeshhulyal.ihds_dc"
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 1

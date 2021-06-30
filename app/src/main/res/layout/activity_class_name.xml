@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:animateLayoutChanges="true"
     tools:context=".activities.UserUploadMenuActivity">
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,7 +33,7 @@
                 android:layout_weight="5"
                 android:fontFamily="@font/poppins_semibold"
                 android:padding="@dimen/padding_14dp"
-                android:text="Select Category"
+                android:text="Select Class"
                 android:textColor="@color/colorPrimary"
                 android:textSize="@dimen/heading_size" />
 
@@ -40,7 +41,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Category"
+                android:hint="Temples"
                 android:padding="@dimen/padding_8dp"
                 app:boxCornerRadiusBottomStart="@dimen/corner_radius_medium"
                 app:boxCornerRadiusTopEnd="@dimen/corner_radius_medium"
@@ -48,24 +49,6 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/category"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Sub Category"
-                android:padding="@dimen/padding_8dp"
-                app:boxCornerRadiusBottomStart="@dimen/corner_radius_medium"
-                app:boxCornerRadiusTopEnd="@dimen/corner_radius_medium"
-                app:boxStrokeColor="@color/colorPrimary">
-
-                <AutoCompleteTextView
-                    android:id="@+id/subCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none" />
@@ -80,6 +63,57 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/poppins_semibold"
                 android:text="Next" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/montserrat"
+                android:lineHeight="20dp"
+                android:padding="@dimen/padding_8dp"
+                android:text="To add new class, click below"
+                android:textAlignment="center" />
+
+            <Button
+                android:id="@+id/addButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="Add New Class" />
+
+            <LinearLayout
+                android:id="@+id/addTempleLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/templeNameLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter temple name"
+                    android:padding="@dimen/padding_8dp"
+                    app:boxCornerRadiusBottomStart="@dimen/corner_radius_medium"
+                    app:boxCornerRadiusTopEnd="@dimen/corner_radius_medium"
+                    app:boxStrokeColor="@color/colorPrimary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/templeName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/addTemple"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Add Temple" />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>

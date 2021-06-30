@@ -201,7 +201,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/poppins_semibold"
-                android:text="Upload Agreement" />
+                android:text="Register" />
 
             <TextView
                 android:layout_width="wrap_content"

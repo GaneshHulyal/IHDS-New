@@ -19,11 +19,6 @@
             android:orientation="vertical"
             tools:context=".activities.LoginActivity">
 
-            <include
-                android:id="@+id/register_toolbar"
-                layout="@layout/toolbar_item" />
-
-
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/progress_bar"
                 android:layout_width="wrap_content"

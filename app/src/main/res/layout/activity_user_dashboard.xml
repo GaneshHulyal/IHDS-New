@@ -95,7 +95,7 @@
                                 android:layout_gravity="center_horizontal"
                                 android:fontFamily="@font/poppins_semibold"
                                 android:padding="@dimen/padding_8dp"
-                                android:text="1,200"
+                                android:text="25000"
                                 android:textColor="@color/green"
                                 android:textSize="@dimen/normal_font_size" />
 
@@ -127,7 +127,7 @@
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins_semibold"
                                 android:padding="@dimen/padding_8dp"
-                                android:text="Text Centric"
+                                android:text="Total Classes"
                                 android:textColor="@color/colorPrimary"
                                 android:textSize="@dimen/text_message_size" />
 
@@ -139,7 +139,7 @@
                                 android:layout_gravity="center"
                                 android:fontFamily="@font/poppins_semibold"
                                 android:padding="@dimen/padding_8dp"
-                                android:text="1,200"
+                                android:text="50"
                                 android:textColor="@color/green"
                                 android:textSize="@dimen/normal_font_size" />
 
@@ -171,6 +171,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:visibility="gone"
                             android:orientation="vertical">
 
                             <TextView
@@ -213,6 +214,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:visibility="gone"
                             android:orientation="vertical">
 
 
@@ -250,6 +252,7 @@
                     android:layout_margin="@dimen/margin"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:padding="@dimen/padding_14dp"
+                    android:visibility="gone"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="@dimen/corner_radius_medium"
                     app:cardElevation="5dp"
